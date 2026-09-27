@@ -146,5 +146,6 @@ def ask_document(document, question: str) -> str:
         reply = chat_completion.choices[0].message.content
         return reply.strip() if reply else "No response received from the AI service."
     except Exception as e:
-        return f"Unable to process question with the AI service at this time. Please try again later."
+        print(f"[AI Error] Type: {type(e).__name__}\n[AI Error] Message: {e}")
+        return "Unable to process question with the AI service at this time. Please try again later."
 

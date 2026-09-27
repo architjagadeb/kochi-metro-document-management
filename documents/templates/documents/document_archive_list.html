@@ -1,6 +1,6 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}Documents Repository - Kochi Metro DMS{% endblock %}
+{% block title %}Archived Documents - Kochi Metro DMS{% endblock %}
 
 {% block extra_css %}
     .list-header {
@@ -24,6 +24,26 @@
         font-size: 0.875rem;
         color: var(--color-text-secondary);
         margin-top: var(--space-1);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-duration) ease;
+    }
+
+    .back-link:hover {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
     }
 
     /* Filter Card */
@@ -234,11 +254,6 @@
         text-decoration: underline;
     }
 
-    .doc-title-link:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-    }
-
     .badge-chip {
         display: inline-block;
         padding: var(--space-1) var(--space-2);
@@ -269,24 +284,6 @@
     }
 
     .chip-restricted {
-        background-color: var(--color-danger-subtle);
-        color: var(--color-danger);
-        border: 1px solid var(--color-danger-border);
-    }
-
-    .chip-status {
-        background-color: var(--color-surface-subtle);
-        color: var(--color-text-secondary);
-        border: 1px solid var(--color-border);
-    }
-
-    .chip-status-approved {
-        background-color: var(--color-success-subtle);
-        color: var(--color-success);
-        border: 1px solid var(--color-success-border);
-    }
-
-    .chip-status-rejected {
         background-color: var(--color-danger-subtle);
         color: var(--color-danger);
         border: 1px solid var(--color-danger-border);
@@ -399,33 +396,28 @@
 {% block content %}
 <div class="list-header">
     <div>
-        <h1 class="list-title">Document Repository</h1>
-        <p class="list-subtitle">Official documents accessible to your profile and department.</p>
+        <h1 class="list-title">Archived Documents</h1>
+        <p class="list-subtitle">Official documents that have been archived from active circulation.</p>
     </div>
     <div>
-        <a href="{% url 'document_archive_list' %}" class="btn-archive-link" style="display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); text-decoration: none; transition: all var(--transition-duration) ease;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="21 8 21 21 3 21 3 8"></polyline>
-                <rect x="1" y="3" width="22" height="5"></rect>
-                <line x1="10" y1="12" x2="14" y2="12"></line>
-            </svg>
-            Archived Documents &rarr;
+        <a href="{% url 'document_list' %}" class="back-link">
+            &larr; Back to Active Documents
         </a>
     </div>
 </div>
 
 <!-- Search & Filtering Controls -->
 <div class="filter-card">
-    <form method="get" action="{% url 'document_list' %}" class="filter-form">
+    <form method="get" action="{% url 'document_archive_list' %}" class="filter-form">
         <!-- Search Box -->
         <div class="search-row">
             <input
                 type="text"
                 name="q"
                 value="{{ q }}"
-                placeholder="Search by document title or extracted text..."
+                placeholder="Search archived documents by title or extracted text..."
                 class="search-input"
-                aria-label="Search documents"
+                aria-label="Search archived documents"
             >
         </div>
 
@@ -447,16 +439,6 @@
                     <option value="">All Departments</option>
                     {% for dept in departments %}
                         <option value="{{ dept.id }}" {% if selected_department == dept.id|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="id_status" class="filter-label">Status</label>
-                <select name="status" id="id_status" class="filter-select">
-                    <option value="">All Statuses</option>
-                    {% for val, label in statuses %}
-                        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -486,7 +468,7 @@
             <div class="filter-actions">
                 <button type="submit" class="btn-filter-submit">Apply Filters</button>
                 {% if has_filters %}
-                    <a href="{% url 'document_list' %}" class="btn-filter-reset">Reset</a>
+                    <a href="{% url 'document_archive_list' %}" class="btn-filter-reset">Reset</a>
                 {% endif %}
             </div>
         </div>
@@ -496,7 +478,7 @@
 <!-- Results Count -->
 <div class="results-meta-bar">
     <span class="results-count">
-        Showing <strong>{{ total_count }}</strong> document{{ total_count|pluralize }}{% if has_filters %} matching filters{% endif %}
+        Showing <strong>{{ total_count }}</strong> archived document{{ total_count|pluralize }}{% if has_filters %} matching filters{% endif %}
     </span>
 </div>
 
@@ -511,7 +493,9 @@
                     <th>Confidentiality</th>
                     <th>Status</th>
                     <th>Uploaded By</th>
-                    <th>Date</th>
+                    <th>Uploaded Date</th>
+                    <th>Archived By</th>
+                    <th>Archived Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -542,23 +526,29 @@
                         </td>
                         <td>
                             <span class="mobile-label">Status</span>
-                            {% if doc.status == 'archived' %}
-                                <span class="badge-chip chip-status-archived">Archived</span>
-                            {% elif doc.status == 'approved' %}
-                                <span class="badge-chip chip-status-approved">Approved</span>
-                            {% elif doc.status == 'rejected' %}
-                                <span class="badge-chip chip-status-rejected">Rejected</span>
-                            {% else %}
-                                <span class="badge-chip chip-status">{{ doc.get_status_display|default:doc.status }}</span>
-                            {% endif %}
+                            <span class="badge-chip chip-status-archived">Archived</span>
                         </td>
                         <td>
                             <span class="mobile-label">Uploaded By</span>
                             <span class="cell-meta">{{ doc.uploaded_by.username|default:"System" }}</span>
                         </td>
                         <td>
-                            <span class="mobile-label">Date</span>
+                            <span class="mobile-label">Uploaded Date</span>
                             <span class="cell-meta">{{ doc.created_date|date:"d M Y, H:i" }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Archived By</span>
+                            <span class="cell-meta">{{ doc.archive_log.user.username|default:"—" }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Archived Date</span>
+                            <span class="cell-meta">
+                                {% if doc.archive_log and doc.archive_log.timestamp %}
+                                    {{ doc.archive_log.timestamp|date:"d M Y, H:i" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </span>
                         </td>
                     </tr>
                 {% endfor %}
@@ -568,16 +558,16 @@
 {% else %}
     {% if has_filters %}
         <div class="empty-state-card">
-            <div class="empty-state-title">No matching documents</div>
-            <div class="empty-state-desc">No documents match your search query or selected filter criteria. Try adjusting or resetting your filters.</div>
+            <div class="empty-state-title">No matching archived documents</div>
+            <div class="empty-state-desc">No archived documents match your search query or selected filter criteria. Try adjusting or resetting your filters.</div>
             <div style="margin-top: var(--space-4);">
-                <a href="{% url 'document_list' %}" class="btn-filter-reset">Clear Filters</a>
+                <a href="{% url 'document_archive_list' %}" class="btn-filter-reset">Clear Filters</a>
             </div>
         </div>
     {% else %}
         <div class="empty-state-card">
-            <div class="empty-state-title">No documents visible</div>
-            <div class="empty-state-desc">No documents are available or match your departmental access level.</div>
+            <div class="empty-state-title">No archived documents</div>
+            <div class="empty-state-desc">There are currently no archived documents visible in the archive repository.</div>
         </div>
     {% endif %}
 {% endif %}

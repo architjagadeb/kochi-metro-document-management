@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env', override=True)
 
 # Groq API Configuration
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'documents',
     'workflow',
     'audit',
+    'notifications',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

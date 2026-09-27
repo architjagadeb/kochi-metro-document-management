@@ -2,7 +2,9 @@ import io
 import os
 import re
 import docx
+import pdf2image
 import pdfplumber
+import pytesseract
 from .models import Document
 
 
@@ -11,6 +13,7 @@ def extract_text(file_obj_or_path):
     Extract text content from a PDF or DOCX file.
     Accepts a filepath, an UploadedFile, or a file-like object.
     Returns extracted text string, or empty string if extraction fails or finds no text.
+    If pdfplumber finds no text in a PDF, it falls back to OCR via pdf2image and pytesseract (up to 20 pages).
     """
     if not file_obj_or_path:
         return ''
@@ -28,12 +31,13 @@ def extract_text(file_obj_or_path):
 
     try:
         if ext == '.pdf':
+            pdf_bytes = None
             # Handle UploadedFile or file-like or path
             if hasattr(file_obj_or_path, 'read'):
                 file_obj_or_path.seek(0)
-                stream = io.BytesIO(file_obj_or_path.read())
+                pdf_bytes = file_obj_or_path.read()
                 file_obj_or_path.seek(0)
-                with pdfplumber.open(stream) as pdf:
+                with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
                     for page in pdf.pages:
                         page_text = page.extract_text()
                         if page_text:
@@ -44,6 +48,26 @@ def extract_text(file_obj_or_path):
                         page_text = page.extract_text()
                         if page_text:
                             text_parts.append(page_text)
+
+            # If pdfplumber finds no text at all, fall back to OCR
+            if not any(part.strip() for part in text_parts):
+                try:
+                    if pdf_bytes is not None:
+                        images = pdf2image.convert_from_bytes(pdf_bytes, first_page=1, last_page=20)
+                    else:
+                        images = pdf2image.convert_from_path(file_obj_or_path, first_page=1, last_page=20)
+
+                    ocr_parts = []
+                    for img in images[:20]:
+                        page_ocr = pytesseract.image_to_string(img)
+                        if page_ocr and page_ocr.strip():
+                            ocr_parts.append(page_ocr.strip())
+
+                    if ocr_parts:
+                        text_parts = ocr_parts
+                except Exception:
+                    # Gracefully handle missing Tesseract binary, poppler error, or OCR failure
+                    pass
 
         elif ext == '.docx':
             if hasattr(file_obj_or_path, 'read'):
@@ -69,6 +93,7 @@ def extract_text(file_obj_or_path):
         return ''
 
     return '\n'.join(text_parts).strip()
+
 
 
 def guess_document_type(text):

@@ -277,3 +277,151 @@ class WorkflowPendingAndActionsTest(TestCase):
         admin_data = get_dashboard_data(self.admin)
         admin_cards = {c['key']: c for c in admin_data['cards']}
         self.assertEqual(admin_cards['approvals']['link'], reverse('workflow_pending_list'))
+
+
+class WorkflowApprovalRuleTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.safety_dept = Department.objects.create(name='Safety & Security')
+        self.fin_dept = Department.objects.create(name='Finance & Accounts')
+
+        self.safety_officer = User.objects.create_user(
+            username='safety_off',
+            password='password123',
+            role=User.ROLE_OFFICER,
+            department=self.safety_dept,
+        )
+        self.fin_officer = User.objects.create_user(
+            username='fin_off',
+            password='password123',
+            role=User.ROLE_OFFICER,
+            department=self.fin_dept,
+        )
+        self.admin = User.objects.create_superuser(
+            username='admin_boss',
+            password='password123',
+            role=User.ROLE_ADMIN,
+            department=self.safety_dept,
+        )
+
+        # Safety circular document
+        self.safety_doc = Document.objects.create(
+            title='Emergency Track Evacuation Protocol',
+            document_type=Document.DOC_TYPE_SAFETY_CIRCULAR,
+            department=self.safety_dept,
+            confidentiality=CONFIDENTIALITY_INTERNAL,
+            status=Document.STATUS_PENDING_APPROVAL,
+            uploaded_by=self.safety_officer,
+        )
+        self.safety_approval = Approval.objects.create(
+            document=self.safety_doc,
+            status=Approval.STATUS_PENDING,
+        )
+
+        # Finance invoice document
+        self.invoice_doc = Document.objects.create(
+            title='Vendor Payment Q3',
+            document_type=Document.DOC_TYPE_INVOICE,
+            department=self.fin_dept,
+            confidentiality=CONFIDENTIALITY_INTERNAL,
+            status=Document.STATUS_PENDING_APPROVAL,
+            uploaded_by=self.fin_officer,
+        )
+        self.invoice_approval = Approval.objects.create(
+            document=self.invoice_doc,
+            status=Approval.STATUS_PENDING,
+        )
+
+        # Rule 1: Safety Circulars in Safety Dept require Admin
+        self.rule_safety = ApprovalRule.objects.create(
+            document_type=Document.DOC_TYPE_SAFETY_CIRCULAR,
+            department=self.safety_dept,
+            approver_role=ApprovalRule.ROLE_ADMIN,
+        )
+
+        # Rule 2: Invoices in Finance Dept require Officer
+        self.rule_finance = ApprovalRule.objects.create(
+            document_type=Document.DOC_TYPE_INVOICE,
+            department=self.fin_dept,
+            approver_role=ApprovalRule.ROLE_OFFICER,
+        )
+
+    def test_pending_list_hides_doc_when_rule_requires_admin_for_officer(self):
+        self.client.login(username='safety_off', password='password123')
+        response = self.client.get(reverse('workflow_pending_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['documents']), 0)
+        self.assertNotContains(response, 'Emergency Track Evacuation Protocol')
+
+    def test_pending_list_shows_doc_when_rule_requires_officer_for_officer(self):
+        self.client.login(username='fin_off', password='password123')
+        response = self.client.get(reverse('workflow_pending_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['documents']), 1)
+        self.assertEqual(response.context['documents'][0], self.invoice_doc)
+        self.assertContains(response, 'Vendor Payment Q3')
+
+    def test_pending_list_shows_all_to_admin_regardless_of_rules(self):
+        self.client.login(username='admin_boss', password='password123')
+        response = self.client.get(reverse('workflow_pending_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['documents']), 2)
+
+    def test_officer_cannot_approve_when_rule_requires_admin(self):
+        self.client.login(username='safety_off', password='password123')
+        response = self.client.post(reverse('workflow_approve_document', args=[self.safety_doc.id]), {
+            'comment': 'Attempting approval without admin role',
+        })
+        self.assertEqual(response.status_code, 404)
+        self.safety_doc.refresh_from_db()
+        self.assertEqual(self.safety_doc.status, Document.STATUS_PENDING_APPROVAL)
+
+    def test_officer_cannot_reject_when_rule_requires_admin(self):
+        self.client.login(username='safety_off', password='password123')
+        response = self.client.post(reverse('workflow_reject_document', args=[self.safety_doc.id]), {
+            'comment': 'Attempting rejection without admin role',
+        })
+        self.assertEqual(response.status_code, 404)
+        self.safety_doc.refresh_from_db()
+        self.assertEqual(self.safety_doc.status, Document.STATUS_PENDING_APPROVAL)
+
+    def test_admin_can_approve_when_rule_requires_admin(self):
+        self.client.login(username='admin_boss', password='password123')
+        response = self.client.post(reverse('workflow_approve_document', args=[self.safety_doc.id]), {
+            'comment': 'Admin approved safety circular.',
+        })
+        self.assertRedirects(response, reverse('workflow_pending_list'))
+        self.safety_doc.refresh_from_db()
+        self.assertEqual(self.safety_doc.status, Document.STATUS_APPROVED)
+
+    def test_fallback_to_department_visibility_when_no_rule_exists(self):
+        # Create a report document in Safety department with NO ApprovalRule
+        report_doc = Document.objects.create(
+            title='Monthly Safety Incident Summary',
+            document_type=Document.DOC_TYPE_REPORT,
+            department=self.safety_dept,
+            confidentiality=CONFIDENTIALITY_INTERNAL,
+            status=Document.STATUS_PENDING_APPROVAL,
+            uploaded_by=self.safety_officer,
+        )
+        Approval.objects.create(
+            document=report_doc,
+            status=Approval.STATUS_PENDING,
+        )
+
+        # Safety officer should see the report document due to fallback
+        self.client.login(username='safety_off', password='password123')
+        response = self.client.get(reverse('workflow_pending_list'))
+        self.assertEqual(response.status_code, 200)
+        docs = response.context['documents']
+        self.assertEqual(len(docs), 1)
+        self.assertEqual(docs[0], report_doc)
+
+        # Safety officer can approve the fallback document
+        post_resp = self.client.post(reverse('workflow_approve_document', args=[report_doc.id]), {
+            'comment': 'Fallback approval works',
+        })
+        self.assertRedirects(post_resp, reverse('workflow_pending_list'))
+        report_doc.refresh_from_db()
+        self.assertEqual(report_doc.status, Document.STATUS_APPROVED)
+

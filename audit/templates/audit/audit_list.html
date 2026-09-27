@@ -1,6 +1,6 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}Documents Repository - Kochi Metro DMS{% endblock %}
+{% block title %}Audit Logs - Kochi Metro DMS{% endblock %}
 
 {% block extra_css %}
     .list-header {
@@ -26,6 +26,26 @@
         margin-top: var(--space-1);
     }
 
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-duration) ease;
+    }
+
+    .back-link:hover {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
     /* Filter Card */
     .filter-card {
         background-color: var(--color-surface);
@@ -40,31 +60,6 @@
         display: flex;
         flex-direction: column;
         gap: var(--space-4);
-    }
-
-    .search-row {
-        display: flex;
-        gap: var(--space-3);
-        width: 100%;
-    }
-
-    .search-input {
-        flex: 1;
-        min-width: 0;
-        padding: var(--space-2) var(--space-4);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        background-color: var(--color-surface-subtle);
-        color: var(--color-text-primary);
-        font-size: 0.9375rem;
-        font-family: var(--font-body);
-        transition: border-color var(--transition-duration) ease, outline var(--transition-duration) ease;
-    }
-
-    .search-input:focus {
-        border-color: var(--color-accent);
-        outline: 2px solid var(--color-accent-subtle);
-        outline-offset: 1px;
     }
 
     .filter-grid {
@@ -188,13 +183,13 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
-    .documents-table {
+    .audit-table {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
     }
 
-    .documents-table th {
+    .audit-table th {
         background-color: var(--color-surface-subtle);
         padding: var(--space-3) var(--space-4);
         font-size: 0.75rem;
@@ -205,7 +200,7 @@
         border-bottom: 1px solid var(--color-border);
     }
 
-    .documents-table td {
+    .audit-table td {
         padding: var(--space-4);
         border-bottom: 1px solid var(--color-border-subtle);
         font-size: 0.875rem;
@@ -213,30 +208,8 @@
         vertical-align: middle;
     }
 
-    .documents-table tbody tr:last-child td {
+    .audit-table tbody tr:last-child td {
         border-bottom: none;
-    }
-
-    .doc-title-cell {
-        font-weight: 600;
-        color: var(--color-text-primary);
-    }
-
-    .doc-title-link {
-        color: var(--color-text-primary);
-        text-decoration: none;
-        font-weight: 600;
-        transition: color var(--transition-duration) ease;
-    }
-
-    .doc-title-link:hover {
-        color: var(--color-accent);
-        text-decoration: underline;
-    }
-
-    .doc-title-link:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
     }
 
     .badge-chip {
@@ -250,58 +223,40 @@
         white-space: nowrap;
     }
 
-    .chip-type {
-        background-color: var(--color-surface-subtle);
-        color: var(--color-text-secondary);
-        border: 1px solid var(--color-border);
-    }
-
-    .chip-public {
-        background-color: var(--color-success-subtle);
-        color: var(--color-success);
-        border: 1px solid var(--color-success-border);
-    }
-
-    .chip-internal {
+    .chip-action {
         background-color: var(--color-accent-subtle);
         color: var(--color-accent);
         border: 1px solid var(--color-accent-border);
     }
 
-    .chip-restricted {
-        background-color: var(--color-danger-subtle);
-        color: var(--color-danger);
-        border: 1px solid var(--color-danger-border);
+    .doc-link {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color var(--transition-duration) ease;
     }
 
-    .chip-status {
-        background-color: var(--color-surface-subtle);
-        color: var(--color-text-secondary);
-        border: 1px solid var(--color-border);
+    .doc-link:hover {
+        text-decoration: underline;
     }
 
-    .chip-status-approved {
-        background-color: var(--color-success-subtle);
-        color: var(--color-success);
-        border: 1px solid var(--color-success-border);
-    }
-
-    .chip-status-rejected {
-        background-color: var(--color-danger-subtle);
-        color: var(--color-danger);
-        border: 1px solid var(--color-danger-border);
-    }
-
-    .chip-status-archived {
-        background-color: var(--color-danger-subtle);
-        color: var(--color-danger);
-        border: 1px solid var(--color-danger-border);
+    .doc-link:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
     }
 
     .cell-meta {
         color: var(--color-text-secondary);
         font-size: 0.8125rem;
         white-space: nowrap;
+    }
+
+    .cell-details {
+        max-width: 320px;
+        color: var(--color-text-secondary);
+        font-size: 0.8125rem;
+        line-height: 1.4;
+        word-break: break-word;
     }
 
     /* Mobile Responsive Card Stacking */
@@ -319,43 +274,35 @@
             flex: 1;
         }
 
-        .documents-table,
-        .documents-table thead,
-        .documents-table tbody,
-        .documents-table th,
-        .documents-table td,
-        .documents-table tr {
+        .audit-table,
+        .audit-table thead,
+        .audit-table tbody,
+        .audit-table th,
+        .audit-table td,
+        .audit-table tr {
             display: block;
         }
 
-        .documents-table thead {
+        .audit-table thead {
             display: none;
         }
 
-        .documents-table tbody tr {
+        .audit-table tbody tr {
             padding: var(--space-4);
             border-bottom: 1px solid var(--color-border);
         }
 
-        .documents-table tbody tr:last-child {
+        .audit-table tbody tr:last-child {
             border-bottom: none;
         }
 
-        .documents-table td {
+        .audit-table td {
             padding: var(--space-1) 0;
             border-bottom: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: var(--space-2);
-        }
-
-        .documents-table td.doc-title-cell {
-            font-size: 1rem;
-            margin-bottom: var(--space-2);
-            padding-bottom: var(--space-1);
-            border-bottom: 1px solid var(--color-border-subtle);
-            display: block;
         }
 
         .mobile-label {
@@ -399,64 +346,36 @@
 {% block content %}
 <div class="list-header">
     <div>
-        <h1 class="list-title">Document Repository</h1>
-        <p class="list-subtitle">Official documents accessible to your profile and department.</p>
+        <h1 class="list-title">System Audit Log</h1>
+        <p class="list-subtitle">Chronological record of document management and administrative activities.</p>
     </div>
     <div>
-        <a href="{% url 'document_archive_list' %}" class="btn-archive-link" style="display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); text-decoration: none; transition: all var(--transition-duration) ease;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="21 8 21 21 3 21 3 8"></polyline>
-                <rect x="1" y="3" width="22" height="5"></rect>
-                <line x1="10" y1="12" x2="14" y2="12"></line>
-            </svg>
-            Archived Documents &rarr;
+        <a href="{% url 'landing' %}" class="back-link">
+            &larr; Back to Dashboard
         </a>
     </div>
 </div>
 
-<!-- Search & Filtering Controls -->
+<!-- Filter Controls -->
 <div class="filter-card">
-    <form method="get" action="{% url 'document_list' %}" class="filter-form">
-        <!-- Search Box -->
-        <div class="search-row">
-            <input
-                type="text"
-                name="q"
-                value="{{ q }}"
-                placeholder="Search by document title or extracted text..."
-                class="search-input"
-                aria-label="Search documents"
-            >
-        </div>
-
-        <!-- Filter Dropdowns & Date Range -->
+    <form method="get" action="{% url 'audit_list' %}" class="filter-form">
         <div class="filter-grid">
             <div class="filter-group">
-                <label for="id_document_type" class="filter-label">Document Type</label>
-                <select name="document_type" id="id_document_type" class="filter-select">
-                    <option value="">All Types</option>
-                    {% for val, label in document_types %}
-                        <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+                <label for="id_action" class="filter-label">Action</label>
+                <select name="action" id="id_action" class="filter-select">
+                    <option value="">All Actions</option>
+                    {% for act in distinct_actions %}
+                        <option value="{{ act }}" {% if selected_action == act %}selected{% endif %}>{{ act|capfirst }}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="filter-group">
-                <label for="id_department" class="filter-label">Department</label>
-                <select name="department" id="id_department" class="filter-select">
-                    <option value="">All Departments</option>
-                    {% for dept in departments %}
-                        <option value="{{ dept.id }}" {% if selected_department == dept.id|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="id_status" class="filter-label">Status</label>
-                <select name="status" id="id_status" class="filter-select">
-                    <option value="">All Statuses</option>
-                    {% for val, label in statuses %}
-                        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+                <label for="id_user" class="filter-label">User</label>
+                <select name="user" id="id_user" class="filter-select">
+                    <option value="">All Users</option>
+                    {% for u in users %}
+                        <option value="{{ u.id }}" {% if selected_user == u.id|stringformat:"s" %}selected{% endif %}>{{ u.username }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -486,7 +405,7 @@
             <div class="filter-actions">
                 <button type="submit" class="btn-filter-submit">Apply Filters</button>
                 {% if has_filters %}
-                    <a href="{% url 'document_list' %}" class="btn-filter-reset">Reset</a>
+                    <a href="{% url 'audit_list' %}" class="btn-filter-reset">Reset</a>
                 {% endif %}
             </div>
         </div>
@@ -496,69 +415,50 @@
 <!-- Results Count -->
 <div class="results-meta-bar">
     <span class="results-count">
-        Showing <strong>{{ total_count }}</strong> document{{ total_count|pluralize }}{% if has_filters %} matching filters{% endif %}
+        Showing <strong>{{ total_count }}</strong> audit log entr{{ total_count|pluralize:"y,ies" }}{% if has_filters %} matching filters{% endif %}
     </span>
 </div>
 
-{% if documents %}
+{% if entries %}
     <div class="table-container">
-        <table class="documents-table">
+        <table class="audit-table">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>Confidentiality</th>
-                    <th>Status</th>
-                    <th>Uploaded By</th>
-                    <th>Date</th>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Document</th>
+                    <th>Details</th>
                 </tr>
             </thead>
             <tbody>
-                {% for doc in documents %}
+                {% for entry in entries %}
                     <tr>
-                        <td class="doc-title-cell">
-                            <a href="{% url 'document_detail' doc.id %}" class="doc-title-link">{{ doc.title }}</a>
+                        <td>
+                            <span class="mobile-label">Timestamp</span>
+                            <span class="cell-meta">{{ entry.timestamp|date:"d M Y, H:i:s" }}</span>
                         </td>
                         <td>
-                            <span class="mobile-label">Type</span>
-                            <span class="badge-chip chip-type">{{ doc.get_document_type_display|default:doc.document_type }}</span>
+                            <span class="mobile-label">User</span>
+                            <span class="cell-meta">{{ entry.user.username|default:"System" }}</span>
                         </td>
                         <td>
-                            <span class="mobile-label">Department</span>
-                            <span class="cell-meta">{{ doc.department.name }}</span>
+                            <span class="mobile-label">Action</span>
+                            <span class="badge-chip chip-action">{{ entry.action }}</span>
                         </td>
                         <td>
-                            <span class="mobile-label">Confidentiality</span>
-                            {% if doc.confidentiality == 'public' %}
-                                <span class="badge-chip chip-public">Public</span>
-                            {% elif doc.confidentiality == 'internal' %}
-                                <span class="badge-chip chip-internal">Internal</span>
-                            {% elif doc.confidentiality == 'restricted' %}
-                                <span class="badge-chip chip-restricted">Restricted</span>
+                            <span class="mobile-label">Document</span>
+                            {% if entry.document %}
+                                <a href="{% url 'document_detail' entry.document.id %}" class="doc-link">
+                                    {{ entry.document.title }}
+                                </a>
                             {% else %}
-                                <span class="badge-chip">{{ doc.confidentiality }}</span>
+                                <span class="cell-meta">—</span>
                             {% endif %}
                         </td>
                         <td>
-                            <span class="mobile-label">Status</span>
-                            {% if doc.status == 'archived' %}
-                                <span class="badge-chip chip-status-archived">Archived</span>
-                            {% elif doc.status == 'approved' %}
-                                <span class="badge-chip chip-status-approved">Approved</span>
-                            {% elif doc.status == 'rejected' %}
-                                <span class="badge-chip chip-status-rejected">Rejected</span>
-                            {% else %}
-                                <span class="badge-chip chip-status">{{ doc.get_status_display|default:doc.status }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="mobile-label">Uploaded By</span>
-                            <span class="cell-meta">{{ doc.uploaded_by.username|default:"System" }}</span>
-                        </td>
-                        <td>
-                            <span class="mobile-label">Date</span>
-                            <span class="cell-meta">{{ doc.created_date|date:"d M Y, H:i" }}</span>
+                            <span class="mobile-label">Details</span>
+                            <span class="cell-details">{{ entry.details|default:"—" }}</span>
                         </td>
                     </tr>
                 {% endfor %}
@@ -568,16 +468,16 @@
 {% else %}
     {% if has_filters %}
         <div class="empty-state-card">
-            <div class="empty-state-title">No matching documents</div>
-            <div class="empty-state-desc">No documents match your search query or selected filter criteria. Try adjusting or resetting your filters.</div>
+            <div class="empty-state-title">No matching audit logs</div>
+            <div class="empty-state-desc">No audit log entries match your selected filter criteria. Try adjusting or resetting your filters.</div>
             <div style="margin-top: var(--space-4);">
-                <a href="{% url 'document_list' %}" class="btn-filter-reset">Clear Filters</a>
+                <a href="{% url 'audit_list' %}" class="btn-filter-reset">Clear Filters</a>
             </div>
         </div>
     {% else %}
         <div class="empty-state-card">
-            <div class="empty-state-title">No documents visible</div>
-            <div class="empty-state-desc">No documents are available or match your departmental access level.</div>
+            <div class="empty-state-title">No audit logs recorded</div>
+            <div class="empty-state-desc">There are currently no audit log entries in the system.</div>
         </div>
     {% endif %}
 {% endif %}

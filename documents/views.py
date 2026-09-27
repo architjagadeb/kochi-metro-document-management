@@ -13,21 +13,16 @@ from .models import Document, DocumentVersion
 from .utils import extract_text, guess_document_type
 
 
-@login_required
-def document_list(request):
+def apply_document_filters(queryset, request, include_status=True):
     """
-    List all documents visible to the current user based on can_view permissions.
-    Supports search across title and extracted text, filtering by document type,
-    department, status, and created date range.
+    Reusable filter logic across document lists (main repository and archive).
     """
     q = request.GET.get('q', '').strip()
     document_type = request.GET.get('document_type', '').strip()
     department_id = request.GET.get('department', '').strip()
-    status = request.GET.get('status', '').strip()
+    status = request.GET.get('status', '').strip() if include_status else ''
     date_from = request.GET.get('date_from', '').strip()
     date_to = request.GET.get('date_to', '').strip()
-
-    queryset = Document.objects.select_related('department', 'uploaded_by', 'current_version').order_by('-created_date')
 
     if q:
         queryset = queryset.filter(
@@ -37,11 +32,10 @@ def document_list(request):
     if document_type:
         queryset = queryset.filter(document_type=document_type)
 
-    if department_id:
-        if department_id.isdigit():
-            queryset = queryset.filter(department_id=int(department_id))
+    if department_id and department_id.isdigit():
+        queryset = queryset.filter(department_id=int(department_id))
 
-    if status:
+    if status and include_status:
         queryset = queryset.filter(status=status)
 
     if date_from:
@@ -58,20 +52,9 @@ def document_list(request):
         except ValueError:
             pass
 
-    visible_docs = [
-        doc for doc in queryset
-        if can_view(request.user, doc.department, doc.confidentiality)
-    ]
-
     has_filters = bool(q or document_type or department_id or status or date_from or date_to)
 
-    departments = Department.objects.all().order_by('name')
-    document_types = Document.DOCUMENT_TYPE_CHOICES
-    statuses = Document.STATUS_CHOICES
-
-    return render(request, 'documents/document_list.html', {
-        'documents': visible_docs,
-        'total_count': len(visible_docs),
+    filter_params = {
         'q': q,
         'selected_type': document_type,
         'selected_department': department_id,
@@ -79,9 +62,84 @@ def document_list(request):
         'date_from': date_from,
         'date_to': date_to,
         'has_filters': has_filters,
+    }
+    return queryset, filter_params
+
+
+@login_required
+def document_list(request):
+    """
+    List all documents visible to the current user based on can_view permissions.
+    Excludes archived documents by default since they have a dedicated archive view.
+    """
+    queryset = Document.objects.select_related('department', 'uploaded_by', 'current_version').order_by('-created_date')
+
+    status = request.GET.get('status', '').strip()
+    if not status:
+        queryset = queryset.exclude(status=Document.STATUS_ARCHIVED)
+
+    queryset, filter_params = apply_document_filters(queryset, request, include_status=True)
+
+    visible_docs = [
+        doc for doc in queryset
+        if can_view(request.user, doc.department, doc.confidentiality)
+    ]
+
+    departments = Department.objects.all().order_by('name')
+    document_types = Document.DOCUMENT_TYPE_CHOICES
+    statuses = [s for s in Document.STATUS_CHOICES if s[0] != Document.STATUS_ARCHIVED]
+
+    return render(request, 'documents/document_list.html', {
+        'documents': visible_docs,
+        'total_count': len(visible_docs),
         'departments': departments,
         'document_types': document_types,
         'statuses': statuses,
+        **filter_params,
+    })
+
+
+@login_required
+def archived_document_list(request):
+    """
+    List all archived documents visible to the current user based on can_view permissions.
+    Reuses the search and filtering logic.
+    """
+    queryset = Document.objects.filter(
+        status=Document.STATUS_ARCHIVED
+    ).select_related('department', 'uploaded_by', 'current_version').order_by('-created_date')
+
+    queryset, filter_params = apply_document_filters(queryset, request, include_status=False)
+
+    visible_docs = [
+        doc for doc in queryset
+        if can_view(request.user, doc.department, doc.confidentiality)
+    ]
+
+    # Look up archive audit log details if available
+    from audit.models import AuditLog
+    doc_ids = [d.id for d in visible_docs]
+    archive_logs = AuditLog.objects.filter(
+        document_id__in=doc_ids,
+        action='archive',
+    ).select_related('user').order_by('timestamp')
+
+    archive_map = {}
+    for log in archive_logs:
+        archive_map[log.document_id] = log
+
+    for doc in visible_docs:
+        doc.archive_log = archive_map.get(doc.id)
+
+    departments = Department.objects.all().order_by('name')
+    document_types = Document.DOCUMENT_TYPE_CHOICES
+
+    return render(request, 'documents/document_archive_list.html', {
+        'documents': visible_docs,
+        'total_count': len(visible_docs),
+        'departments': departments,
+        'document_types': document_types,
+        **filter_params,
     })
 
 
@@ -210,6 +268,22 @@ def resubmit_document(request, id):
                 document=document,
                 details=audit_details,
             )
+
+            # Notify relevant officers or admin in that department
+            from notifications.utils import notify
+            try:
+                approvers = User.objects.filter(
+                    Q(role=User.ROLE_ADMIN) | Q(is_superuser=True) |
+                    Q(role=User.ROLE_OFFICER, department=document.department)
+                ).distinct()
+                for approver in approvers:
+                    notify(
+                        user=approver,
+                        message=f'Document "{document.title}" has been resubmitted for approval.',
+                        link=f'/documents/{document.id}/',
+                    )
+            except Exception as e:
+                print(f"[Notification Error] Failed to notify approvers on resubmit: {e}")
 
             messages.success(request, f'Document "{document.title}" has been resubmitted for approval.')
             return redirect('document_detail', id=document.id)
@@ -392,6 +466,22 @@ def upload_document(request):
                 document=document,
                 status=Approval.STATUS_PENDING,
             )
+
+            # Notify relevant officers or admin in that department
+            from notifications.utils import notify
+            try:
+                approvers = User.objects.filter(
+                    Q(role=User.ROLE_ADMIN) | Q(is_superuser=True) |
+                    Q(role=User.ROLE_OFFICER, department=document.department)
+                ).distinct()
+                for approver in approvers:
+                    notify(
+                        user=approver,
+                        message=f'New document "{document.title}" is pending approval.',
+                        link=f'/documents/{document.id}/',
+                    )
+            except Exception as e:
+                print(f"[Notification Error] Failed to notify approvers on upload: {e}")
 
             messages.success(request, f'Document "{document.title}" uploaded successfully.')
             return redirect('landing')

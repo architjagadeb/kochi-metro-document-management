@@ -112,6 +112,75 @@ class DocumentHelpersTest(TestCase):
         text = extract_text(corrupt_file)
         self.assertEqual(text, '')
 
+    @patch('documents.utils.pdfplumber.open')
+    @patch('documents.utils.pdf2image.convert_from_bytes')
+    @patch('documents.utils.pytesseract.image_to_string')
+    def test_extract_text_pdf_ocr_fallback_success(self, mock_ocr, mock_pdf2img, mock_pdfplumber):
+        # pdfplumber returns page with empty text
+        mock_page = type('Page', (), {'extract_text': lambda self: ''})()
+        mock_pdf = type('PDF', (), {'pages': [mock_page], '__enter__': lambda s: s, '__exit__': lambda s, *a: None})()
+        mock_pdfplumber.return_value = mock_pdf
+
+        mock_image = object()
+        mock_pdf2img.return_value = [mock_image]
+        mock_ocr.return_value = 'Scanned Invoice Text from OCR'
+
+        dummy_pdf = SimpleUploadedFile('scanned.pdf', b'%PDF-1.4 dummy', content_type='application/pdf')
+        result = extract_text(dummy_pdf)
+
+        self.assertEqual(result, 'Scanned Invoice Text from OCR')
+        mock_pdf2img.assert_called_once()
+        mock_ocr.assert_called_once_with(mock_image)
+
+    @patch('documents.utils.pdfplumber.open')
+    @patch('documents.utils.pdf2image.convert_from_bytes')
+    @patch('documents.utils.pytesseract.image_to_string')
+    def test_extract_text_pdf_ocr_missing_tesseract_graceful_fallback(self, mock_ocr, mock_pdf2img, mock_pdfplumber):
+        mock_page = type('Page', (), {'extract_text': lambda self: ''})()
+        mock_pdf = type('PDF', (), {'pages': [mock_page], '__enter__': lambda s: s, '__exit__': lambda s, *a: None})()
+        mock_pdfplumber.return_value = mock_pdf
+
+        mock_pdf2img.return_value = [object()]
+        mock_ocr.side_effect = Exception('tesseract is not installed or it is not in your PATH')
+
+        dummy_pdf = SimpleUploadedFile('scanned.pdf', b'%PDF-1.4 dummy', content_type='application/pdf')
+        result = extract_text(dummy_pdf)
+
+        self.assertEqual(result, '')
+
+    @patch('documents.utils.pdfplumber.open')
+    @patch('documents.utils.pdf2image.convert_from_bytes')
+    @patch('documents.utils.pytesseract.image_to_string')
+    def test_extract_text_pdf_ocr_capped_at_20_pages(self, mock_ocr, mock_pdf2img, mock_pdfplumber):
+        mock_page = type('Page', (), {'extract_text': lambda self: ''})()
+        mock_pdf = type('PDF', (), {'pages': [mock_page], '__enter__': lambda s: s, '__exit__': lambda s, *a: None})()
+        mock_pdfplumber.return_value = mock_pdf
+
+        # Return 25 mock images
+        mock_images = [object() for _ in range(25)]
+        mock_pdf2img.return_value = mock_images
+        mock_ocr.side_effect = lambda img: 'Page OCR text'
+
+        dummy_pdf = SimpleUploadedFile('scanned_large.pdf', b'%PDF-1.4 dummy', content_type='application/pdf')
+        result = extract_text(dummy_pdf)
+
+        self.assertIn('Page OCR text', result)
+        self.assertEqual(mock_ocr.call_count, 20)
+
+    @patch('documents.utils.pdfplumber.open')
+    @patch('documents.utils.pdf2image.convert_from_bytes')
+    def test_extract_text_pdfplumber_success_skips_ocr(self, mock_pdf2img, mock_pdfplumber):
+        mock_page = type('Page', (), {'extract_text': lambda self: 'Direct text from PDF'})()
+        mock_pdf = type('PDF', (), {'pages': [mock_page], '__enter__': lambda s: s, '__exit__': lambda s, *a: None})()
+        mock_pdfplumber.return_value = mock_pdf
+
+        dummy_pdf = SimpleUploadedFile('direct.pdf', b'%PDF-1.4 dummy', content_type='application/pdf')
+        result = extract_text(dummy_pdf)
+
+        self.assertEqual(result, 'Direct text from PDF')
+        mock_pdf2img.assert_not_called()
+
+
 
 class DocumentUploadViewTest(TestCase):
     def setUp(self):
@@ -705,8 +774,8 @@ class DocumentArchiveTest(TestCase):
         self.assertContains(detail_res, 'Unarchive')
         self.assertContains(detail_res, 'Archived')
 
-        # 3. Document list still displays archived document with Archived badge
-        list_res = self.client.get(reverse('document_list'))
+        # 3. Archive list displays archived document with Archived badge
+        list_res = self.client.get(reverse('document_archive_list'))
         self.assertEqual(list_res.status_code, 200)
         self.assertContains(list_res, 'Operations SOP 2026')
         self.assertContains(list_res, 'Archived')
@@ -1121,6 +1190,98 @@ class DocumentResubmitTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.rejected_doc.refresh_from_db()
         self.assertEqual(self.rejected_doc.status, Document.STATUS_REJECTED)
+
+
+class ArchivedDocumentListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.dept_ops = Department.objects.create(name='Operations')
+        self.dept_fin = Department.objects.create(name='Finance')
+
+        self.user_ops = User.objects.create_user(
+            username='user_ops_archive',
+            password='password123',
+            role=User.ROLE_EMPLOYEE,
+            department=self.dept_ops,
+        )
+        self.admin_user = User.objects.create_user(
+            username='admin_archive',
+            password='password123',
+            role=User.ROLE_ADMIN,
+        )
+
+        # Active doc in Ops
+        self.active_doc = Document.objects.create(
+            title='Active Operations Manual',
+            document_type=Document.DOC_TYPE_REPORT,
+            department=self.dept_ops,
+            confidentiality=CONFIDENTIALITY_INTERNAL,
+            status=Document.STATUS_APPROVED,
+            uploaded_by=self.user_ops,
+        )
+
+        # Archived doc in Ops
+        self.archived_doc = Document.objects.create(
+            title='Archived Track Standards 2020',
+            document_type=Document.DOC_TYPE_SAFETY_CIRCULAR,
+            department=self.dept_ops,
+            confidentiality=CONFIDENTIALITY_INTERNAL,
+            status=Document.STATUS_ARCHIVED,
+            uploaded_by=self.user_ops,
+        )
+
+        # Archived doc in Finance (Restricted)
+        self.restricted_archived_doc = Document.objects.create(
+            title='Restricted Finance Audit 2019',
+            document_type=Document.DOC_TYPE_REPORT,
+            department=self.dept_fin,
+            confidentiality=CONFIDENTIALITY_RESTRICTED,
+            status=Document.STATUS_ARCHIVED,
+            uploaded_by=self.admin_user,
+        )
+
+    def test_main_document_list_excludes_archived_by_default(self):
+        self.client.login(username='user_ops_archive', password='password123')
+        response = self.client.get(reverse('document_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Active Operations Manual')
+        self.assertNotContains(response, 'Archived Track Standards 2020')
+        self.assertContains(response, reverse('document_archive_list'))
+
+    def test_archived_document_list_shows_only_archived_and_respects_can_view(self):
+        self.client.login(username='user_ops_archive', password='password123')
+        response = self.client.get(reverse('document_archive_list'))
+        self.assertEqual(response.status_code, 200)
+        # Should see Ops archived doc
+        self.assertContains(response, 'Archived Track Standards 2020')
+        # Should NOT see active doc
+        self.assertNotContains(response, 'Active Operations Manual')
+        # Should NOT see restricted Finance doc (due to can_view)
+        self.assertNotContains(response, 'Restricted Finance Audit 2019')
+        # Back link to main list
+        self.assertContains(response, reverse('document_list'))
+
+    def test_admin_can_view_all_archived_documents(self):
+        self.client.login(username='admin_archive', password='password123')
+        response = self.client.get(reverse('document_archive_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Archived Track Standards 2020')
+        self.assertContains(response, 'Restricted Finance Audit 2019')
+
+    def test_archived_document_list_search_and_filtering(self):
+        self.client.login(username='admin_archive', password='password123')
+        url = reverse('document_archive_list')
+
+        # Filter by search keyword
+        res_q = self.client.get(url, {'q': 'Standards'})
+        self.assertContains(res_q, 'Archived Track Standards 2020')
+        self.assertNotContains(res_q, 'Restricted Finance Audit 2019')
+
+        # Filter with no matching results
+        res_none = self.client.get(url, {'q': 'NonExistentXYZ'})
+        self.assertEqual(res_none.status_code, 200)
+        self.assertContains(res_none, 'No matching archived documents')
+
 
 
 

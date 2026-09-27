@@ -66,6 +66,15 @@ def get_dashboard_data(user):
     recent_uploads_count = len(recent_visible_docs)
     recent_uploads_list = recent_visible_docs[:5]
 
+    # Notifications for the current user
+    if user and user.is_authenticated:
+        from notifications.models import Notification
+        user_notifications = list(Notification.objects.filter(recipient=user).order_by('-created_date')[:5])
+        unread_notifications_count = Notification.objects.filter(recipient=user, is_read=False).count()
+    else:
+        user_notifications = []
+        unread_notifications_count = 0
+
     try:
         docs_link = reverse('document_list')
     except Exception:
@@ -97,13 +106,14 @@ def get_dashboard_data(user):
             {
                 'key': 'notifications',
                 'label': 'Notifications',
-                'value': 0,
+                'value': unread_notifications_count,
                 'link': None,
                 'is_primary': False,
             },
         ],
         'recent_uploads': recent_uploads_list,
-        'notifications': [],
+        'notifications': user_notifications,
+        'unread_notifications_count': unread_notifications_count,
     }
 
 

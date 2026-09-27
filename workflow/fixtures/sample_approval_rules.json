@@ -1,0 +1,29 @@
+[
+  {
+    "model": "workflow.approvalrule",
+    "pk": 1,
+    "fields": {
+      "document_type": "invoice",
+      "department": 6,
+      "approver_role": "officer"
+    }
+  },
+  {
+    "model": "workflow.approvalrule",
+    "pk": 2,
+    "fields": {
+      "document_type": "safety circular",
+      "department": 7,
+      "approver_role": "admin"
+    }
+  },
+  {
+    "model": "workflow.approvalrule",
+    "pk": 3,
+    "fields": {
+      "document_type": "tender",
+      "department": 1,
+      "approver_role": "officer"
+    }
+  }
+]
