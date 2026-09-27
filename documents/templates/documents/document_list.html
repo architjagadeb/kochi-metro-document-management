@@ -1,0 +1,574 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Documents Repository - Kochi Metro DMS{% endblock %}
+
+{% block extra_css %}
+    .list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+    }
+
+    .list-title {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .list-subtitle {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        margin-top: var(--space-1);
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-5);
+        margin-bottom: var(--space-6);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .filter-form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .search-row {
+        display: flex;
+        gap: var(--space-3);
+        width: 100%;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 0;
+        padding: var(--space-2) var(--space-4);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-primary);
+        font-size: 0.9375rem;
+        font-family: var(--font-body);
+        transition: border-color var(--transition-duration) ease, outline var(--transition-duration) ease;
+    }
+
+    .search-input:focus {
+        border-color: var(--color-accent);
+        outline: 2px solid var(--color-accent-subtle);
+        outline-offset: 1px;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: var(--space-4);
+        align-items: flex-end;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        min-width: 0;
+    }
+
+    .filter-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+    }
+
+    .filter-select,
+    .filter-date-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-primary);
+        font-size: 0.875rem;
+        font-family: var(--font-body);
+        transition: border-color var(--transition-duration) ease;
+    }
+
+    .filter-select:focus,
+    .filter-date-input:focus {
+        border-color: var(--color-accent);
+        outline: 2px solid var(--color-accent-subtle);
+        outline-offset: 1px;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: var(--space-2);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-filter-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-accent);
+        color: var(--color-surface);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color var(--transition-duration) ease;
+        height: 38px;
+        box-sizing: border-box;
+    }
+
+    .btn-filter-submit:hover {
+        background-color: var(--color-accent-hover);
+    }
+
+    .btn-filter-reset {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color var(--transition-duration) ease, color var(--transition-duration) ease;
+        height: 38px;
+        box-sizing: border-box;
+    }
+
+    .btn-filter-reset:hover {
+        background-color: var(--color-border-subtle);
+        color: var(--color-text-primary);
+    }
+
+    /* Results Meta Bar */
+    .results-meta-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-3);
+        padding: 0 var(--space-1);
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+    }
+
+    .results-count {
+        font-weight: 500;
+    }
+
+    .results-count strong {
+        color: var(--color-text-primary);
+    }
+
+    /* Table Styles */
+    .table-container {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .documents-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .documents-table th {
+        background-color: var(--color-surface-subtle);
+        padding: var(--space-3) var(--space-4);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .documents-table td {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--color-border-subtle);
+        font-size: 0.875rem;
+        color: var(--color-text-primary);
+        vertical-align: middle;
+    }
+
+    .documents-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .doc-title-cell {
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+
+    .doc-title-link {
+        color: var(--color-text-primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color var(--transition-duration) ease;
+    }
+
+    .doc-title-link:hover {
+        color: var(--color-accent);
+        text-decoration: underline;
+    }
+
+    .doc-title-link:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    .badge-chip {
+        display: inline-block;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-pill);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .chip-type {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .chip-public {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        border: 1px solid var(--color-success-border);
+    }
+
+    .chip-internal {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-border);
+    }
+
+    .chip-restricted {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+    }
+
+    .chip-status {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .chip-status-approved {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        border: 1px solid var(--color-success-border);
+    }
+
+    .chip-status-rejected {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+    }
+
+    .chip-status-archived {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+    }
+
+    .cell-meta {
+        color: var(--color-text-secondary);
+        font-size: 0.8125rem;
+        white-space: nowrap;
+    }
+
+    /* Mobile Responsive Card Stacking */
+    @media (max-width: 767px) {
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-actions {
+            width: 100%;
+        }
+
+        .btn-filter-submit,
+        .btn-filter-reset {
+            flex: 1;
+        }
+
+        .documents-table,
+        .documents-table thead,
+        .documents-table tbody,
+        .documents-table th,
+        .documents-table td,
+        .documents-table tr {
+            display: block;
+        }
+
+        .documents-table thead {
+            display: none;
+        }
+
+        .documents-table tbody tr {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .documents-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .documents-table td {
+            padding: var(--space-1) 0;
+            border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .documents-table td.doc-title-cell {
+            font-size: 1rem;
+            margin-bottom: var(--space-2);
+            padding-bottom: var(--space-1);
+            border-bottom: 1px solid var(--color-border-subtle);
+            display: block;
+        }
+
+        .mobile-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-muted);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .mobile-label {
+            display: none;
+        }
+    }
+
+    .empty-state-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-10) var(--space-6);
+        text-align: center;
+    }
+
+    .empty-state-title {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .empty-state-desc {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+    }
+{% endblock %}
+
+{% block content %}
+<div class="list-header">
+    <div>
+        <h1 class="list-title">Document Repository</h1>
+        <p class="list-subtitle">Official documents accessible to your profile and department.</p>
+    </div>
+</div>
+
+<!-- Search & Filtering Controls -->
+<div class="filter-card">
+    <form method="get" action="{% url 'document_list' %}" class="filter-form">
+        <!-- Search Box -->
+        <div class="search-row">
+            <input
+                type="text"
+                name="q"
+                value="{{ q }}"
+                placeholder="Search by document title or extracted text..."
+                class="search-input"
+                aria-label="Search documents"
+            >
+        </div>
+
+        <!-- Filter Dropdowns & Date Range -->
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label for="id_document_type" class="filter-label">Document Type</label>
+                <select name="document_type" id="id_document_type" class="filter-select">
+                    <option value="">All Types</option>
+                    {% for val, label in document_types %}
+                        <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="id_department" class="filter-label">Department</label>
+                <select name="department" id="id_department" class="filter-select">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if selected_department == dept.id|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="id_status" class="filter-label">Status</label>
+                <select name="status" id="id_status" class="filter-select">
+                    <option value="">All Statuses</option>
+                    {% for val, label in statuses %}
+                        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="id_date_from" class="filter-label">Date From</label>
+                <input
+                    type="date"
+                    name="date_from"
+                    id="id_date_from"
+                    value="{{ date_from }}"
+                    class="filter-date-input"
+                >
+            </div>
+
+            <div class="filter-group">
+                <label for="id_date_to" class="filter-label">Date To</label>
+                <input
+                    type="date"
+                    name="date_to"
+                    id="id_date_to"
+                    value="{{ date_to }}"
+                    class="filter-date-input"
+                >
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn-filter-submit">Apply Filters</button>
+                {% if has_filters %}
+                    <a href="{% url 'document_list' %}" class="btn-filter-reset">Reset</a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Results Count -->
+<div class="results-meta-bar">
+    <span class="results-count">
+        Showing <strong>{{ total_count }}</strong> document{{ total_count|pluralize }}{% if has_filters %} matching filters{% endif %}
+    </span>
+</div>
+
+{% if documents %}
+    <div class="table-container">
+        <table class="documents-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Department</th>
+                    <th>Confidentiality</th>
+                    <th>Status</th>
+                    <th>Uploaded By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                    <tr>
+                        <td class="doc-title-cell">
+                            <a href="{% url 'document_detail' doc.id %}" class="doc-title-link">{{ doc.title }}</a>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Type</span>
+                            <span class="badge-chip chip-type">{{ doc.get_document_type_display|default:doc.document_type }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Department</span>
+                            <span class="cell-meta">{{ doc.department.name }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Confidentiality</span>
+                            {% if doc.confidentiality == 'public' %}
+                                <span class="badge-chip chip-public">Public</span>
+                            {% elif doc.confidentiality == 'internal' %}
+                                <span class="badge-chip chip-internal">Internal</span>
+                            {% elif doc.confidentiality == 'restricted' %}
+                                <span class="badge-chip chip-restricted">Restricted</span>
+                            {% else %}
+                                <span class="badge-chip">{{ doc.confidentiality }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="mobile-label">Status</span>
+                            {% if doc.status == 'archived' %}
+                                <span class="badge-chip chip-status-archived">Archived</span>
+                            {% elif doc.status == 'approved' %}
+                                <span class="badge-chip chip-status-approved">Approved</span>
+                            {% elif doc.status == 'rejected' %}
+                                <span class="badge-chip chip-status-rejected">Rejected</span>
+                            {% else %}
+                                <span class="badge-chip chip-status">{{ doc.get_status_display|default:doc.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="mobile-label">Uploaded By</span>
+                            <span class="cell-meta">{{ doc.uploaded_by.username|default:"System" }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Date</span>
+                            <span class="cell-meta">{{ doc.created_date|date:"d M Y, H:i" }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    {% if has_filters %}
+        <div class="empty-state-card">
+            <div class="empty-state-title">No matching documents</div>
+            <div class="empty-state-desc">No documents match your search query or selected filter criteria. Try adjusting or resetting your filters.</div>
+            <div style="margin-top: var(--space-4);">
+                <a href="{% url 'document_list' %}" class="btn-filter-reset">Clear Filters</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-state-title">No documents visible</div>
+            <div class="empty-state-desc">No documents are available or match your departmental access level.</div>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

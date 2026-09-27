@@ -1,0 +1,344 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Dashboard - Kochi Metro DMS{% endblock %}
+
+{% block extra_css %}
+    /* ==========================================================================
+       USER BANNER
+       ========================================================================== */
+    .user-banner {
+        margin-bottom: var(--space-8);
+    }
+
+    .user-name {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        font-style: normal;
+    }
+
+    .user-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        margin-top: var(--space-2);
+        font-size: 0.9375rem;
+        color: var(--color-text-secondary);
+    }
+
+    .user-handle {
+        color: var(--color-text-muted);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .role-chip {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-pill);
+        border: 1px solid var(--color-accent-border);
+        text-transform: capitalize;
+        line-height: 1;
+    }
+
+    .department-label {
+        color: var(--color-text-secondary);
+        font-weight: 500;
+    }
+
+    /* ==========================================================================
+       METRIC CARDS GRID
+       ========================================================================== */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        margin-bottom: var(--space-8);
+    }
+
+    @media (min-width: 480px) {
+        .cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .cards-grid {
+            grid-template-columns: 1fr 1.15fr 1fr 1fr;
+        }
+    }
+
+    .metric-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-5) var(--space-5);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+        transition: transform var(--transition-duration) ease,
+                    opacity var(--transition-duration) ease,
+                    border-color var(--transition-duration) ease;
+    }
+
+    .metric-card.is-primary {
+        border-color: var(--color-accent-border);
+        background-color: var(--color-surface);
+        padding: var(--space-6) var(--space-5);
+    }
+
+    .metric-number {
+        font-family: var(--font-display);
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        line-height: 1;
+        margin-bottom: var(--space-3);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .metric-card.is-primary .metric-number {
+        color: var(--color-accent);
+        font-size: 2.75rem;
+    }
+
+    .metric-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+
+    /* Linked card interactive states */
+    a.metric-card {
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    a.metric-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--color-accent);
+    }
+
+    a.metric-card:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    a.metric-card:active {
+        transform: translateY(0);
+        opacity: 0.85;
+    }
+
+    a.metric-card[aria-disabled="true"] {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: default;
+    }
+
+    /* ==========================================================================
+       SECTIONS & EMPTY STATES
+       ========================================================================== */
+    .sections-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    @media (min-width: 768px) {
+        .sections-layout {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .section-panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .section-title {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.01em;
+        margin-bottom: var(--space-4);
+        font-style: normal;
+    }
+
+    .activity-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .activity-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+    }
+
+    .activity-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .activity-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .activity-meta {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        margin-top: var(--space-1);
+    }
+
+    .badge-chip {
+        display: inline-block;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-pill);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .chip-type {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .empty-state {
+        background-color: var(--color-surface-subtle);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-md);
+        padding: var(--space-8) var(--space-4);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+    }
+
+    .empty-state-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .empty-state-subtitle {
+        font-size: 0.8125rem;
+        color: var(--color-text-muted);
+        line-height: 1.4;
+    }
+{% endblock %}
+
+{% block content %}
+    <!-- User Banner -->
+    <section class="user-banner">
+        <h1 class="user-name">{{ user.get_full_name|default:user.username }}</h1>
+        <div class="user-meta">
+            <span class="user-handle">@{{ user.username }}</span>
+            <span class="role-chip">{{ user.get_role_display|default:user.role }}</span>
+            <span class="department-label">
+                {% if user.department %}
+                    {{ user.department.name }}
+                {% else %}
+                    Unassigned Department
+                {% endif %}
+            </span>
+        </div>
+    </section>
+
+    <!-- Metric Cards Grid -->
+    <section class="cards-grid" aria-label="Overview Metrics">
+        {% for card in dashboard.cards %}
+            {% if card.link %}
+                <a href="{{ card.link }}" class="metric-card{% if card.is_primary %} is-primary{% endif %}">
+                    <div class="metric-number">{{ card.value }}</div>
+                    <div class="metric-label">{{ card.label }}</div>
+                </a>
+            {% else %}
+                <div class="metric-card{% if card.is_primary %} is-primary{% endif %}">
+                    <div class="metric-number">{{ card.value }}</div>
+                    <div class="metric-label">{{ card.label }}</div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </section>
+
+    <!-- Activity Feeds / Empty States -->
+    <section class="sections-layout">
+        <!-- Recent Uploads -->
+        <div class="section-panel">
+            <h2 class="section-title">Recent uploads</h2>
+            {% if dashboard.recent_uploads %}
+                <ul class="activity-list">
+                    {% for upload in dashboard.recent_uploads %}
+                        <li class="activity-item">
+                            <div class="activity-main">
+                                <span class="activity-title">{{ upload.title }}</span>
+                                <span class="activity-meta">{{ upload.department.name }} &bull; {{ upload.created_date|date:"d M Y, H:i" }}</span>
+                            </div>
+                            <span class="badge-chip chip-type">{{ upload.get_document_type_display|default:upload.document_type }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-title">No uploads yet</div>
+                    <div class="empty-state-subtitle">New uploads will appear here.</div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Notifications -->
+        <div class="section-panel">
+            <h2 class="section-title">Notifications</h2>
+            {% if dashboard.notifications %}
+                <ul class="activity-list">
+                    {% for notification in dashboard.notifications %}
+                        <li class="activity-item">{{ notification }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-title">You are all caught up</div>
+                    <div class="empty-state-subtitle">No new notifications at this time.</div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

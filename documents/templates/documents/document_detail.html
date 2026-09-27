@@ -1,0 +1,823 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}{{ document.title }} - Kochi Metro DMS{% endblock %}
+
+{% block extra_css %}
+    .detail-container {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: var(--space-4);
+        transition: color var(--transition-duration) ease;
+    }
+
+    .back-link:hover {
+        color: var(--color-accent);
+    }
+
+    .detail-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        margin-bottom: var(--space-8);
+    }
+
+    .doc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+        padding-bottom: var(--space-6);
+        border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    .doc-title {
+        font-family: var(--font-display);
+        font-size: 1.625rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+    }
+
+    .header-chips {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
+    .badge-chip {
+        display: inline-block;
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-pill);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .chip-type {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .chip-public {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        border: 1px solid var(--color-success-border);
+    }
+
+    .chip-internal {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-border);
+    }
+
+    .chip-restricted {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+    }
+
+    .chip-status {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .chip-status-approved {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        border: 1px solid var(--color-success-border);
+    }
+
+    .chip-status-rejected {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+    }
+
+    .chip-status-archived {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+    }
+
+    .btn-archive-action {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-3);
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: var(--radius-pill);
+        cursor: pointer;
+        line-height: 1;
+        transition: background-color var(--transition-duration) ease, border-color var(--transition-duration) ease;
+    }
+
+    .btn-archive {
+        background-color: var(--color-surface);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .btn-archive:hover {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border-color: var(--color-danger-border);
+    }
+
+    .btn-unarchive {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        border: 1px solid var(--color-success-border);
+    }
+
+    .btn-unarchive:hover {
+        background-color: var(--color-surface);
+        border-color: var(--color-success);
+    }
+
+    /* Document Metadata Grid */
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-5);
+    }
+
+    .meta-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .meta-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-1);
+    }
+
+    .meta-value {
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--color-text-primary);
+    }
+
+    /* Section Cards */
+    .section-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        margin-bottom: var(--space-8);
+    }
+
+    .section-title {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.01em;
+        margin-bottom: var(--space-6);
+    }
+
+    .versions-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .versions-table th {
+        background-color: var(--color-surface-subtle);
+        padding: var(--space-3) var(--space-4);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .versions-table td {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--color-border-subtle);
+        font-size: 0.875rem;
+        color: var(--color-text-primary);
+        vertical-align: middle;
+    }
+
+    .versions-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .version-tag {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--color-text-primary);
+    }
+
+    .current-badge {
+        display: inline-block;
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-border);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: var(--radius-pill);
+        margin-left: var(--space-2);
+        vertical-align: middle;
+    }
+
+    .btn-download {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        background-color: var(--color-surface-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-border);
+        text-decoration: none;
+        padding: var(--space-1) var(--space-3);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        transition: background-color var(--transition-duration) ease, border-color var(--transition-duration) ease;
+        white-space: nowrap;
+    }
+
+    .btn-download:hover {
+        background-color: var(--color-accent-subtle);
+        border-color: var(--color-accent);
+    }
+
+    .btn-download:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    .change-note-text {
+        color: var(--color-text-secondary);
+        font-size: 0.8125rem;
+        max-width: 280px;
+    }
+
+    /* Form Group & Dropzone Styles */
+    .form-group {
+        margin-bottom: var(--space-4);
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-2);
+    }
+
+    .form-input,
+    .form-select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9375rem;
+        transition: border-color var(--transition-duration) ease;
+        height: 42px;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+        border-color: var(--color-accent);
+        outline: 2px solid var(--color-accent-subtle);
+    }
+
+    .form-textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9375rem;
+        outline: none;
+        transition: border-color var(--transition-duration) ease;
+        resize: vertical;
+    }
+
+    .form-textarea:focus {
+        border-color: var(--color-accent);
+        outline: 2px solid var(--color-accent-subtle);
+    }
+
+    .version-dropzone {
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface-subtle);
+        padding: var(--space-5) var(--space-4);
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        transition: border-color var(--transition-duration) ease, background-color var(--transition-duration) ease;
+        margin-bottom: var(--space-4);
+    }
+
+    .version-dropzone:hover {
+        border-color: var(--color-accent);
+        background-color: var(--color-accent-subtle);
+    }
+
+    .version-file-input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .version-file-name {
+        display: none;
+        margin-top: var(--space-2);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--color-accent);
+    }
+
+    .btn-submit-version {
+        background-color: var(--color-accent);
+        color: var(--color-surface);
+        border: none;
+        padding: var(--space-2) var(--space-5);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: background-color var(--transition-duration) ease;
+    }
+
+    .btn-submit-version:hover {
+        background-color: var(--color-accent-hover);
+    }
+
+    .btn-submit-version:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    /* Ask About Document Box */
+    .ask-box-form {
+        display: flex;
+        gap: var(--space-3);
+        align-items: center;
+    }
+
+    .ask-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ask-submit-btn {
+        background-color: var(--color-accent);
+        color: var(--color-surface);
+        border: none;
+        padding: var(--space-2) var(--space-5);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        height: 42px;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color var(--transition-duration) ease;
+    }
+
+    .ask-submit-btn:hover {
+        background-color: var(--color-accent-hover);
+    }
+
+    .ask-submit-btn:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    .ask-response-box {
+        margin-top: var(--space-5);
+        padding: var(--space-4) var(--space-5);
+        background-color: var(--color-surface-subtle);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+    }
+
+    .ask-qa-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--space-1);
+    }
+
+    .ask-question-text {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-4);
+    }
+
+    .ask-answer-text {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--color-text-primary);
+        white-space: pre-wrap;
+    }
+
+    @media (max-width: 576px) {
+        .ask-box-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .ask-submit-btn {
+            width: 100%;
+        }
+    }
+
+    /* Mobile Responsive Version Stacking */
+    @media (max-width: 767px) {
+        .versions-table,
+        .versions-table thead,
+        .versions-table tbody,
+        .versions-table th,
+        .versions-table td,
+        .versions-table tr {
+            display: block;
+        }
+
+        .versions-table thead {
+            display: none;
+        }
+
+        .versions-table tbody tr {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .versions-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .versions-table td {
+            padding: var(--space-1) 0;
+            border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .mobile-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-muted);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .mobile-label {
+            display: none;
+        }
+    }
+{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <a href="{% url 'document_list' %}" class="back-link">&larr; Back to Documents</a>
+
+    <!-- Main Document Details Card -->
+    <div class="detail-card">
+        <div class="doc-header">
+            <h1 class="doc-title">{{ document.title }}</h1>
+            <div class="header-chips">
+                <span class="badge-chip chip-type">{{ document.get_document_type_display|default:document.document_type }}</span>
+
+                {% if document.confidentiality == 'public' %}
+                    <span class="badge-chip chip-public">Public</span>
+                {% elif document.confidentiality == 'internal' %}
+                    <span class="badge-chip chip-internal">Internal</span>
+                {% elif document.confidentiality == 'restricted' %}
+                    <span class="badge-chip chip-restricted">Restricted</span>
+                {% else %}
+                    <span class="badge-chip">{{ document.confidentiality }}</span>
+                {% endif %}
+
+                {% if document.status == 'archived' %}
+                    <span class="badge-chip chip-status-archived">Archived</span>
+                {% elif document.status == 'approved' %}
+                    <span class="badge-chip chip-status-approved">Approved</span>
+                {% elif document.status == 'rejected' %}
+                    <span class="badge-chip chip-status-rejected">Rejected</span>
+                {% else %}
+                    <span class="badge-chip chip-status">{{ document.get_status_display|default:document.status }}</span>
+                {% endif %}
+
+                {% if can_upload_version %}
+                    <form method="post" action="{% url 'document_toggle_archive' document.id %}" style="display: inline; margin-left: var(--space-2);">
+                        {% csrf_token %}
+                        {% if document.status == 'archived' %}
+                            <button type="submit" class="btn-archive-action btn-unarchive">Unarchive</button>
+                        {% else %}
+                            <button type="submit" class="btn-archive-action btn-archive">Archive</button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="meta-grid">
+            <div class="meta-item">
+                <span class="meta-label">Department</span>
+                <span class="meta-value">{{ document.department.name }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Uploaded By</span>
+                <span class="meta-value">{{ document.uploaded_by.username|default:"System" }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Created Date</span>
+                <span class="meta-value">{{ document.created_date|date:"d M Y, H:i" }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Current Version</span>
+                <span class="meta-value">
+                    {% if document.current_version %}
+                        v{{ document.current_version.version_number }}
+                    {% else %}
+                        No version available
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ask About This Document Card -->
+    <div class="section-card" id="ask-document-card">
+        <h2 class="section-title">Ask about this document</h2>
+        <form method="post" action="#ask-document-card">
+            {% csrf_token %}
+            <div class="ask-box-form">
+                <input
+                    type="text"
+                    name="ai_question"
+                    id="id_ai_question"
+                    class="form-input ask-input"
+                    placeholder="Ask a question about this document..."
+                    value="{{ ai_question|default:'' }}"
+                    required
+                >
+                <button type="submit" class="ask-submit-btn">Ask</button>
+            </div>
+        </form>
+
+        {% if ai_answer %}
+            <div class="ask-response-box">
+                <div class="ask-qa-label" style="color: var(--color-text-muted);">Question</div>
+                <div class="ask-question-text">{{ ai_question }}</div>
+                <div class="ask-qa-label" style="color: var(--color-accent);">Answer</div>
+                <div class="ask-answer-text">{{ ai_answer }}</div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if can_upload_version %}
+        <div class="section-card">
+            <h2 class="section-title">Upload New Version</h2>
+
+            <form method="post" action="{% url 'document_upload_new_version' document.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label">New Document File (PDF or DOCX, max 10 MB)</label>
+                    <div class="version-dropzone">
+                        <input
+                            type="file"
+                            name="file"
+                            id="id_version_file"
+                            class="version-file-input"
+                            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            required
+                        >
+                        <div>
+                            <strong>Choose file</strong> or drag &amp; drop here
+                        </div>
+                        <div class="version-file-name" id="versionFileName"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_change_note" class="form-label">Change Note (Optional)</label>
+                    <textarea
+                        name="change_note"
+                        id="id_change_note"
+                        class="form-textarea"
+                        placeholder="Describe what changed in this version..."
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit-version">Upload New Version</button>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if can_resubmit %}
+        <div class="section-card">
+            <h2 class="section-title">Resubmit Document for Approval</h2>
+            <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: var(--space-4);">
+                This document was rejected. Update the metadata or add a note addressing the rejection feedback before resubmitting.
+            </p>
+
+            <form method="post" action="{% url 'document_resubmit' document.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_resubmit_title" class="form-label">Document Title</label>
+                    <input
+                        type="text"
+                        name="title"
+                        id="id_resubmit_title"
+                        class="form-input"
+                        value="{{ resubmit_form.title.value|default:document.title }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Replacement Document File (Optional, PDF or DOCX up to 10 MB)</label>
+                    <div class="version-dropzone">
+                        <input
+                            type="file"
+                            name="file"
+                            id="id_resubmit_file"
+                            class="version-file-input"
+                            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        >
+                        <div>
+                            <strong>Choose file</strong> or drag &amp; drop here (leave blank to keep current file)
+                        </div>
+                        <div class="version-file-name" id="resubmitFileName"></div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="id_resubmit_document_type" class="form-label">Document Type</label>
+                        <select name="document_type" id="id_resubmit_document_type" class="form-select">
+                            {% for val, label in resubmit_form.fields.document_type.choices %}
+                                <option value="{{ val }}" {% if resubmit_form.document_type.value == val or document.document_type == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="id_resubmit_confidentiality" class="form-label">Confidentiality</label>
+                        <select name="confidentiality" id="id_resubmit_confidentiality" class="form-select">
+                            {% for val, label in resubmit_form.fields.confidentiality.choices %}
+                                <option value="{{ val }}" {% if resubmit_form.confidentiality.value == val or document.confidentiality == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_resubmit_note" class="form-label">Note Addressing Rejection (Optional)</label>
+                    <textarea
+                        name="note"
+                        id="id_resubmit_note"
+                        class="form-textarea"
+                        placeholder="Explain what was revised or address the rejection feedback..."
+                        rows="3"
+                    >{{ resubmit_form.note.value|default:"" }}</textarea>
+                </div>
+
+                <button type="submit" class="btn-submit-version">Resubmit for Approval</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <!-- Versions History Card -->
+    <div class="section-card">
+        <h2 class="section-title">Version History</h2>
+
+        <div class="table-container">
+            <table class="versions-table">
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th>Upload Date</th>
+                        <th>Uploaded By</th>
+                        <th>Change Note</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ver in versions %}
+                        <tr>
+                            <td>
+                                <span class="mobile-label">Version</span>
+                                <div>
+                                    <span class="version-tag">v{{ ver.version_number }}</span>
+                                    {% if document.current_version and document.current_version.id == ver.id %}
+                                        <span class="current-badge">Current</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="mobile-label">Upload Date</span>
+                                <span>{{ ver.created_date|date:"d M Y, H:i" }}</span>
+                            </td>
+                            <td>
+                                <span class="mobile-label">Uploaded By</span>
+                                <span>{{ ver.uploaded_by.username|default:"System" }}</span>
+                            </td>
+                            <td>
+                                <span class="mobile-label">Change Note</span>
+                                <span class="change-note-text">{{ ver.change_note|default:"—" }}</span>
+                            </td>
+                            <td>
+                                <span class="mobile-label">Action</span>
+                                <a href="{% url 'document_version_download' document.id ver.id %}" class="btn-download">
+                                    Download File
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--color-text-muted); padding: var(--space-6);">
+                                No versions recorded for this document.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const versionFileInput = document.getElementById('id_version_file');
+    const versionFileName = document.getElementById('versionFileName');
+
+    if (versionFileInput && versionFileName) {
+        versionFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                versionFileName.textContent = 'Selected: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                versionFileName.style.display = 'block';
+            }
+        });
+    }
+
+    const resubmitFileInput = document.getElementById('id_resubmit_file');
+    const resubmitFileName = document.getElementById('resubmitFileName');
+
+    if (resubmitFileInput && resubmitFileName) {
+        resubmitFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                resubmitFileName.textContent = 'Selected: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                resubmitFileName.style.display = 'block';
+            }
+        });
+    }
+</script>
+{% endblock %}

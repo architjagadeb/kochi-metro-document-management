@@ -1,0 +1,452 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Pending Approvals - Kochi Metro DMS{% endblock %}
+
+{% block extra_css %}
+    .pending-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+    }
+
+    .pending-title {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .pending-subtitle {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        margin-top: var(--space-1);
+    }
+
+    .table-container {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .pending-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .pending-table th {
+        background-color: var(--color-surface-subtle);
+        padding: var(--space-3) var(--space-4);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .pending-table td {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--color-border-subtle);
+        font-size: 0.875rem;
+        color: var(--color-text-primary);
+        vertical-align: middle;
+    }
+
+    .pending-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .doc-title-cell {
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+
+    .doc-title-link {
+        color: var(--color-text-primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color var(--transition-duration) ease;
+    }
+
+    .doc-title-link:hover {
+        color: var(--color-accent);
+        text-decoration: underline;
+    }
+
+    .badge-chip {
+        display: inline-block;
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-pill);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .chip-type {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+    }
+
+    .cell-meta {
+        color: var(--color-text-secondary);
+        font-size: 0.8125rem;
+        white-space: nowrap;
+    }
+
+    .actions-cell {
+        display: flex;
+        gap: var(--space-2);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action-approve {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-3);
+        background-color: var(--color-success-subtle);
+        color: var(--color-success);
+        border: 1px solid var(--color-success-border);
+        border-radius: var(--radius-md);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color var(--transition-duration) ease;
+    }
+
+    .btn-action-approve:hover {
+        background-color: var(--color-success-border);
+    }
+
+    .btn-action-reject {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--space-1) var(--space-3);
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger-border);
+        border-radius: var(--radius-md);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color var(--transition-duration) ease;
+    }
+
+    .btn-action-reject:hover {
+        background-color: var(--color-danger-border);
+    }
+
+    /* Modals for Comments */
+    .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-4);
+    }
+
+    .modal-backdrop.active {
+        display: flex;
+    }
+
+    .modal-box {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-title {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: var(--space-2);
+        color: var(--color-text-primary);
+    }
+
+    .modal-desc {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-4);
+    }
+
+    .modal-textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: var(--space-3);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        margin-bottom: var(--space-4);
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-3);
+    }
+
+    .btn-modal-cancel {
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-surface-subtle);
+        color: var(--color-text-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-modal-confirm-approve {
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-success);
+        color: var(--color-surface);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-modal-confirm-reject {
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-danger);
+        color: var(--color-surface);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Mobile Responsive Card Stacking */
+    @media (max-width: 767px) {
+        .pending-table,
+        .pending-table thead,
+        .pending-table tbody,
+        .pending-table th,
+        .pending-table td,
+        .pending-table tr {
+            display: block;
+        }
+
+        .pending-table thead {
+            display: none;
+        }
+
+        .pending-table tbody tr {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .pending-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .pending-table td {
+            padding: var(--space-1) 0;
+            border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .pending-table td.doc-title-cell {
+            font-size: 1rem;
+            margin-bottom: var(--space-2);
+            padding-bottom: var(--space-1);
+            border-bottom: 1px solid var(--color-border-subtle);
+            display: block;
+        }
+
+        .mobile-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-muted);
+        }
+
+        .actions-cell {
+            margin-top: var(--space-2);
+            width: 100%;
+            justify-content: stretch;
+        }
+
+        .btn-action-approve,
+        .btn-action-reject {
+            flex: 1;
+            text-align: center;
+            justify-content: center;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .mobile-label {
+            display: none;
+        }
+    }
+
+    .empty-state-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-10) var(--space-6);
+        text-align: center;
+    }
+
+    .empty-state-title {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .empty-state-desc {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+    }
+{% endblock %}
+
+{% block content %}
+<div class="pending-header">
+    <div>
+        <h1 class="pending-title">Pending Approvals</h1>
+        <p class="pending-subtitle">Review, approve, or reject documents awaiting your department's verification.</p>
+    </div>
+</div>
+
+{% if documents %}
+    <div class="table-container">
+        <table class="pending-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Uploaded By</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                    <tr>
+                        <td class="doc-title-cell">
+                            <a href="{% url 'document_detail' doc.id %}" class="doc-title-link">{{ doc.title }}</a>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Type</span>
+                            <span class="badge-chip chip-type">{{ doc.get_document_type_display|default:doc.document_type }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Uploaded By</span>
+                            <span class="cell-meta">{{ doc.uploaded_by.username|default:"System" }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Date</span>
+                            <span class="cell-meta">{{ doc.created_date|date:"d M Y, H:i" }}</span>
+                        </td>
+                        <td>
+                            <span class="mobile-label">Actions</span>
+                            <div class="actions-cell">
+                                <button type="button" class="btn-action-approve" onclick="openApproveModal('{{ doc.id }}', '{{ doc.title|escapejs }}')">Approve</button>
+                                <button type="button" class="btn-action-reject" onclick="openRejectModal('{{ doc.id }}', '{{ doc.title|escapejs }}')">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state-card">
+        <div class="empty-state-title">No documents pending approval</div>
+        <div class="empty-state-desc">All submitted documents for your department have been reviewed.</div>
+    </div>
+{% endif %}
+
+<!-- Approve Modal -->
+<div id="approveModal" class="modal-backdrop">
+    <div class="modal-box">
+        <h2 class="modal-title">Approve Document</h2>
+        <p class="modal-desc" id="approveDocTitle"></p>
+        <form method="post" id="approveForm" action="">
+            {% csrf_token %}
+            <label for="approveComment" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: var(--space-1);">Optional Comment</label>
+            <textarea name="comment" id="approveComment" class="modal-textarea" placeholder="Add any approval notes (optional)..."></textarea>
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal-cancel" onclick="closeModals()">Cancel</button>
+                <button type="submit" class="btn-modal-confirm-approve">Confirm Approval</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div id="rejectModal" class="modal-backdrop">
+    <div class="modal-box">
+        <h2 class="modal-title">Reject Document</h2>
+        <p class="modal-desc" id="rejectDocTitle"></p>
+        <form method="post" id="rejectForm" action="">
+            {% csrf_token %}
+            <label for="rejectComment" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: var(--space-1); color: var(--color-danger);">Reason for Rejection (Required)</label>
+            <textarea name="comment" id="rejectComment" class="modal-textarea" placeholder="State reason for rejecting this document..." required></textarea>
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal-cancel" onclick="closeModals()">Cancel</button>
+                <button type="submit" class="btn-modal-confirm-reject">Reject Document</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openApproveModal(docId, docTitle) {
+        document.getElementById('approveDocTitle').textContent = 'Approve "' + docTitle + '"?';
+        document.getElementById('approveForm').action = '/workflow/' + docId + '/approve/';
+        document.getElementById('approveModal').classList.add('active');
+    }
+
+    function openRejectModal(docId, docTitle) {
+        document.getElementById('rejectDocTitle').textContent = 'Reject "' + docTitle + '"?';
+        document.getElementById('rejectForm').action = '/workflow/' + docId + '/reject/';
+        document.getElementById('rejectModal').classList.add('active');
+    }
+
+    function closeModals() {
+        document.getElementById('approveModal').classList.remove('active');
+        document.getElementById('rejectModal').classList.remove('active');
+    }
+
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal-backdrop')) {
+            closeModals();
+        }
+    });
+</script>
+{% endblock %}

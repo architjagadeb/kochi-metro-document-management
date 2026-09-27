@@ -1,0 +1,9 @@
+# Protected media uploads
+protected_files/
+
+# Python / Django
+*.pyc
+__pycache__/
+*.sqlite3
+.venv/
+.env

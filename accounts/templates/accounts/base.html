@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kochi Metro DMS{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           DESIGN TOKENS (Shared System)
+           ========================================================================== */
+        :root {
+            /* Typography */
+            --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+            /* Colors (OKLCH) */
+            --color-bg: oklch(0.985 0.005 240);
+            --color-surface: oklch(1.0 0 0);
+            --color-surface-subtle: oklch(0.965 0.005 240);
+            --color-border: oklch(0.89 0.01 240);
+            --color-border-subtle: oklch(0.93 0.006 240);
+
+            --color-text-primary: oklch(0.18 0.02 250);
+            --color-text-secondary: oklch(0.48 0.02 250);
+            --color-text-muted: oklch(0.62 0.015 250);
+
+            /* Brand Accent: Cool Blue */
+            --color-accent: oklch(0.56 0.16 235);
+            --color-accent-hover: oklch(0.50 0.17 235);
+            --color-accent-subtle: oklch(0.95 0.035 235);
+            --color-accent-border: oklch(0.82 0.08 235);
+
+            /* Action / Sign Out: Red */
+            --color-danger: oklch(0.58 0.22 25);
+            --color-danger-hover: oklch(0.50 0.24 25);
+            --color-danger-subtle: oklch(0.96 0.04 25);
+            --color-danger-border: oklch(0.88 0.08 25);
+
+            /* Success: Green */
+            --color-success: oklch(0.55 0.16 145);
+            --color-success-subtle: oklch(0.96 0.04 145);
+            --color-success-border: oklch(0.85 0.08 145);
+
+            /* Neutral Dark: Admin Navigation */
+            --color-neutral-dark: oklch(0.28 0.02 250);
+            --color-neutral-dark-hover: oklch(0.20 0.02 250);
+
+            /* 4px Spacing Scale */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+
+            /* Radii */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-pill: 9999px;
+
+            /* Transitions */
+            --transition-duration: 150ms;
+        }
+
+        /* ==========================================================================
+           BASE STYLES
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ==========================================================================
+           HEADER & NAVIGATION
+           ========================================================================== */
+        .site-header {
+            background-color: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-4) var(--space-6);
+        }
+
+        .header-inner {
+            max-width: 1160px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .wordmark {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .btn-upload {
+            background-color: var(--color-accent);
+            color: var(--color-surface);
+            text-decoration: none;
+            padding: var(--space-2) var(--space-4);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            white-space: nowrap;
+            transition: background-color var(--transition-duration) ease, transform var(--transition-duration) ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .btn-upload:hover {
+            background-color: var(--color-accent-hover);
+        }
+
+        .btn-upload:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .btn-admin {
+            background-color: var(--color-neutral-dark);
+            color: var(--color-surface);
+            text-decoration: none;
+            padding: var(--space-2) var(--space-4);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            white-space: nowrap;
+            transition: background-color var(--transition-duration) ease;
+        }
+
+        .btn-admin:hover {
+            background-color: var(--color-neutral-dark-hover);
+        }
+
+        .btn-admin:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .btn-signout {
+            background-color: var(--color-danger);
+            color: var(--color-surface);
+            border: none;
+            padding: var(--space-2) var(--space-4);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color var(--transition-duration) ease;
+        }
+
+        .btn-signout:hover {
+            background-color: var(--color-danger-hover);
+        }
+
+        .btn-signout:focus-visible {
+            outline: 2px solid var(--color-danger);
+            outline-offset: 2px;
+        }
+
+        /* ==========================================================================
+           MAIN CONTAINER & MESSAGES
+           ========================================================================== */
+        .main-container {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: var(--space-8) var(--space-6);
+            width: 100%;
+            flex: 1;
+        }
+
+        .messages-container {
+            margin-bottom: var(--space-6);
+        }
+
+        .alert-message {
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: var(--space-3);
+        }
+
+        .alert-success {
+            background-color: var(--color-success-subtle);
+            color: var(--color-success);
+            border: 1px solid var(--color-success-border);
+        }
+
+        .alert-error {
+            background-color: var(--color-danger-subtle);
+            color: var(--color-danger);
+            border: 1px solid var(--color-danger-border);
+        }
+
+        /* ==========================================================================
+           REDUCED MOTION
+           ========================================================================== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'landing' %}" class="wordmark">Kochi Metro DMS</a>
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'document_upload' %}" class="btn-upload">Upload document</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'admin:index' %}" class="btn-admin">Django Admin</a>
+                    {% endif %}
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-signout">Sign Out</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        {% if messages %}
+            <div class="messages-container" aria-live="polite">
+                {% for message in messages %}
+                    <div class="alert-message alert-{{ message.tags|default:'info' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

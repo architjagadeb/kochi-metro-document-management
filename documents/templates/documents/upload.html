@@ -1,0 +1,358 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Upload Document - Kochi Metro DMS{% endblock %}
+
+{% block extra_css %}
+    .upload-container {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: var(--space-4);
+        transition: color var(--transition-duration) ease;
+    }
+
+    .back-link:hover {
+        color: var(--color-accent);
+    }
+
+    .upload-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-heading {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        margin-bottom: var(--space-2);
+    }
+
+    .card-subtitle {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-6);
+    }
+
+    /* Large Tap Area / Dropzone */
+    .dropzone {
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-surface-subtle);
+        padding: var(--space-8) var(--space-6);
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        transition: border-color var(--transition-duration) ease, background-color var(--transition-duration) ease;
+        margin-bottom: var(--space-6);
+    }
+
+    .dropzone:hover,
+    .dropzone.dragover {
+        border-color: var(--color-accent);
+        background-color: var(--color-accent-subtle);
+    }
+
+    .dropzone-input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .dropzone-prompt {
+        pointer-events: none;
+    }
+
+    .dropzone-title {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+    }
+
+    .dropzone-hint {
+        font-size: 0.8125rem;
+        color: var(--color-text-muted);
+    }
+
+    .file-preview {
+        display: none;
+        margin-top: var(--space-3);
+        padding: var(--space-2) var(--space-4);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-accent-border);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-accent);
+    }
+
+    /* Form Controls */
+    .form-group {
+        margin-bottom: var(--space-5);
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-2);
+    }
+
+    .form-input,
+    .form-select {
+        width: 100%;
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        color: var(--color-text-primary);
+        font-family: var(--font-body);
+        font-size: 0.9375rem;
+        outline: none;
+        transition: border-color var(--transition-duration) ease;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+        border-color: var(--color-accent);
+        outline: 2px solid var(--color-accent-subtle);
+    }
+
+    .field-hint {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        margin-top: var(--space-1);
+    }
+
+    .field-error {
+        font-size: 0.8125rem;
+        color: var(--color-danger);
+        margin-top: var(--space-1);
+        font-weight: 500;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-top: var(--space-8);
+        padding-top: var(--space-6);
+        border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .btn-submit {
+        background-color: var(--color-accent);
+        color: var(--color-surface);
+        border: none;
+        padding: var(--space-3) var(--space-6);
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: background-color var(--transition-duration) ease;
+    }
+
+    .btn-submit:hover {
+        background-color: var(--color-accent-hover);
+    }
+
+    .btn-submit:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    .btn-cancel {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .btn-cancel:hover {
+        color: var(--color-text-primary);
+    }
+{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <a href="{% url 'landing' %}" class="back-link">&larr; Back to Dashboard</a>
+
+    <div class="upload-card">
+        <h1 class="card-heading">Upload Document</h1>
+        <p class="card-subtitle">Upload a PDF or DOCX file (up to 10 MB). Text and category will be automatically extracted.</p>
+
+        {% if form.non_field_errors %}
+            <div class="alert-message alert-error">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <!-- Large Tap Area / File Dropzone -->
+            <div class="dropzone" id="dropzoneContainer">
+                <input
+                    type="file"
+                    name="file"
+                    id="id_file"
+                    class="dropzone-input"
+                    accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    required
+                >
+                <div class="dropzone-prompt">
+                    <div class="dropzone-title">Choose file or drag &amp; drop here</div>
+                    <div class="dropzone-hint">PDF or DOCX documents up to 10 MB</div>
+                </div>
+                <div class="file-preview" id="filePreview"></div>
+            </div>
+            {% if form.file.errors %}
+                <div class="field-error">{{ form.file.errors.0 }}</div>
+            {% endif %}
+
+            <!-- Title -->
+            <div class="form-group">
+                <label for="id_title" class="form-label">Document Title</label>
+                <input
+                    type="text"
+                    name="title"
+                    id="id_title"
+                    class="form-input"
+                    placeholder="Defaults to file name if left blank"
+                    value="{{ form.title.value|default:'' }}"
+                    maxlength="255"
+                >
+                <div class="field-hint">Leave blank to automatically use the file name.</div>
+                {% if form.title.errors %}
+                    <div class="field-error">{{ form.title.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Document Type -->
+            <div class="form-group">
+                <label for="id_document_type" class="form-label">Document Type</label>
+                <select name="document_type" id="id_document_type" class="form-select">
+                    {% for val, label in form.fields.document_type.choices %}
+                        <option value="{{ val }}" {% if form.document_type.value == val or not form.document_type.value and val == 'auto' %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="field-hint">Auto detect will inspect the file text to categorize the document.</div>
+                {% if form.document_type.errors %}
+                    <div class="field-error">{{ form.document_type.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Confidentiality -->
+            <div class="form-group">
+                <label for="id_confidentiality" class="form-label">Confidentiality Level</label>
+                <select name="confidentiality" id="id_confidentiality" class="form-select">
+                    {% for val, label in form.fields.confidentiality.choices %}
+                        <option value="{{ val }}" {% if form.confidentiality.value == val %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if form.confidentiality.errors %}
+                    <div class="field-error">{{ form.confidentiality.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Department (Selectable for Admins, Automatic for Staff) -->
+            {% if form.fields.department.widget.input_type == 'hidden' %}
+                {{ form.department }}
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <div class="form-input" style="background-color: var(--color-surface-subtle); cursor: not-allowed;">
+                        {{ user.department.name|default:"Unassigned" }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label for="id_department" class="form-label">Department</label>
+                    <select name="department" id="id_department" class="form-select">
+                        {% for dept in form.fields.department.queryset %}
+                            <option value="{{ dept.id }}" {% if form.department.value|stringformat:"s" == dept.id|stringformat:"s" or form.fields.department.initial.id == dept.id %}selected{% endif %}>
+                                {{ dept.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.department.errors %}
+                        <div class="field-error">{{ form.department.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Upload Document</button>
+                <a href="{% url 'landing' %}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const fileInput = document.getElementById('id_file');
+    const titleInput = document.getElementById('id_title');
+    const dropzone = document.getElementById('dropzoneContainer');
+    const filePreview = document.getElementById('filePreview');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                filePreview.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                filePreview.style.display = 'inline-block';
+
+                // Auto-fill title if empty
+                if (!titleInput.value.trim()) {
+                    const baseName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+                    titleInput.value = baseName;
+                }
+            }
+        });
+
+        // Drag and drop visual cues
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+    }
+</script>
+{% endblock %}
