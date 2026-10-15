@@ -1,0 +1,1033 @@
+[
+{
+  "model": "sessions.session",
+  "pk": "9iqo18sytmeagso5o396b4dmml2qs1lp",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGllONusPJT1nsNbeNQ6gRIqTCnF3iJQC2jcz76UibWuNW5MljqzOqlen3y1Rfsi0A77TdJt1nqd1GZPeFX3Qpq8zy_NyuH8HlVr91kClC548SEnBegMQXMgiaUAeJFtvO3BsLJZ-MEkQDVhMgMJMDiGo9wfeMzeK:1xAlSy:mwDI8WJmWMl9W8Kil5OPKe5N1EefhCFZZNNGtoRh6go",
+    "expire_date": "2026-10-11T09:46:40.190Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ltzhmef1rufkyebe4ifb1kbg2wxlyhvw",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnr2A6Gkp4zWPsLDiBHipMKcXeIlALaNzPvZTKuS8lr0zmPYs7GmcPvRsgPrRuQO9bbZHmqyzyS3RS702avk-jzsrt_BwVb-dbEgKRwDH1wwo76JEya4oCRPVBMiCLs9RQ9QgpBAjjshuQJiaBD8_4ADyw48g:1xAAi3:qDNQbNLY5OXutEccZ-94gvVN0HBperAD56AEa-g_zXs",
+    "expire_date": "2026-10-09T18:31:47.798Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "uqq79ypwtocf47g2l94wbyql4806rhmn",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnr2A6Gkp4zWPsLDiBHipMKcXeIlALaNzPvZTKuS8lr0zmPYs7GmcPvRsgPrRuQO9bbZHmqyzyS3RS702avk-jzsrt_BwVb-dbEgKRwDH1wwo76JEya4oCRPVBMiCLs9RQ9QgpBAjjshuQJiaBD8_4ADyw48g:1xAAhv:hSjNlGNPBoTsO1asKP5y1803_FmBE8jwDA71M1tIOt8",
+    "expire_date": "2026-10-09T18:31:39.560Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 1,
+  "fields": {
+    "name": "Operations & Station Management"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 2,
+  "fields": {
+    "name": "Signalling & Telecommunications"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 3,
+  "fields": {
+    "name": "Rolling Stock & Traction"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 4,
+  "fields": {
+    "name": "Civil Engineering & Track Maintenance"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 5,
+  "fields": {
+    "name": "Human Resources & Administration"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 6,
+  "fields": {
+    "name": "Finance & Accounts"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 7,
+  "fields": {
+    "name": "Safety & Security"
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$9bNUpD8SKGBbKPTmasGaFg$8Ey0S8eJ0wPXGr8G1cLL9JZnhiowEyrl3rMhJMmmLPo=",
+    "last_login": "2026-09-27T09:45:07.511Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "System",
+    "last_name": "Administrator",
+    "email": "admin@kochimetro.org",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-09-24T13:42:53.774Z",
+    "role": "admin",
+    "department": 5,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$V0ARJE15DVJssKTn9yP1E9$ZlZVUKfO05Y7QqgjNGc3dn4t5LmFfVYkm5lo+a3dlN8=",
+    "last_login": "2026-09-27T09:46:40.189Z",
+    "is_superuser": false,
+    "username": "ops_employee",
+    "first_name": "Operations",
+    "last_name": "Employee",
+    "email": "ops_employee@kochimetro.org",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-24T13:46:32.642Z",
+    "role": "employee",
+    "department": 1,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$lMMGuWidAbRQUeK7xzFGlr$bl74DHwhEF8EYQIDWI+98LuzXuMTpPqtgJWJJwRNTY0=",
+    "last_login": "2026-09-27T09:09:57.977Z",
+    "is_superuser": false,
+    "username": "fin_employee",
+    "first_name": "Finance",
+    "last_name": "Employee",
+    "email": "fin_employee@kochimetro.org",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-24T13:46:32.863Z",
+    "role": "employee",
+    "department": 6,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$1OKs7JSADvwSX27o3vshQl$sDSqXAWDWJcGfnT4q7Xx+GADGon3uAGK4+MRZvjXeVo=",
+    "last_login": "2026-09-27T09:42:35.305Z",
+    "is_superuser": false,
+    "username": "ops_officer",
+    "first_name": "Operations",
+    "last_name": "Officer",
+    "email": "ops_officer@kochimetro.org",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-24T13:46:33.079Z",
+    "role": "officer",
+    "department": 1,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$9HAtn4Y1DOYYFuhKTX48mW$bGmlkaaS19OBpBba+m9bJ035ANSrhiJ00y6mdJlHu+c=",
+    "last_login": "2026-09-27T09:11:31.176Z",
+    "is_superuser": false,
+    "username": "fin_officer",
+    "first_name": "Finance",
+    "last_name": "Officer",
+    "email": "fin_officer@kochimetro.org",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-24T13:46:33.306Z",
+    "role": "officer",
+    "department": 6,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$oZJiI7uWZF9S8v10wzUYnE$PVv0eJLPH4feMKb5TFviR0ilyuvzKcOpS/TzIQmiTh4=",
+    "last_login": "2026-09-27T09:10:57.051Z",
+    "is_superuser": false,
+    "username": "safety_officer",
+    "first_name": "Safety",
+    "last_name": "Officer",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-27T09:10:41.390Z",
+    "role": "officer",
+    "department": 7,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 1,
+  "fields": {
+    "title": "034 Archit",
+    "document_type": "contract",
+    "department": 1,
+    "confidentiality": "public",
+    "status": "uploaded",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T07:00:36.020Z",
+    "current_version": 1
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 2,
+  "fields": {
+    "title": "archit jagadeb certificate",
+    "document_type": "invoice",
+    "department": 1,
+    "confidentiality": "public",
+    "status": "uploaded",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-26T07:03:03.365Z",
+    "current_version": 2
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 3,
+  "fields": {
+    "title": "034 Archit",
+    "document_type": "contract",
+    "department": 1,
+    "confidentiality": "public",
+    "status": "uploaded",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T07:06:10.893Z",
+    "current_version": 5
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 4,
+  "fields": {
+    "title": "adobe certificate",
+    "document_type": "legal",
+    "department": 1,
+    "confidentiality": "restricted",
+    "status": "archived",
+    "previous_status": "uploaded",
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T15:59:46.716Z",
+    "current_version": 4
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 5,
+  "fields": {
+    "title": "Archit OFFER LETTER",
+    "document_type": "contract",
+    "department": 1,
+    "confidentiality": "public",
+    "status": "rejected",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:18:47.804Z",
+    "current_version": 6
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 6,
+  "fields": {
+    "title": "IIT Ropar",
+    "document_type": "other",
+    "department": 1,
+    "confidentiality": "public",
+    "status": "approved",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:26:30.704Z",
+    "current_version": 7
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 7,
+  "fields": {
+    "title": "assignment python",
+    "document_type": "report",
+    "department": 1,
+    "confidentiality": "internal",
+    "status": "approved",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:37:18.153Z",
+    "current_version": 9
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 8,
+  "fields": {
+    "title": "Receipt",
+    "document_type": "other",
+    "department": 1,
+    "confidentiality": "public",
+    "status": "approved",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T07:51:15.835Z",
+    "current_version": 10
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 9,
+  "fields": {
+    "title": "assignment python",
+    "document_type": "other",
+    "department": 1,
+    "confidentiality": "internal",
+    "status": "rejected",
+    "previous_status": "",
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T09:25:09.794Z",
+    "current_version": 11
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 1,
+  "fields": {
+    "document": 1,
+    "version_number": 1,
+    "file": "documents/2026/09/034_Archit_1.pdf",
+    "extracted_text": "SWARNA JAYANTI HARYANA INSTITUTE FOR FISCAL\nMANAGEMENT HARYANA, PANCHKULA\nLETTER FOR INTERNSHIP IN A RESEARCH PROJECT\nMemo No.:- SJHIFM/Skill Gap Study/2026/034\nTo: Mr. Archit Jagadeb,\nSubject: Internship offer on a Project on Skill Gap Study in Haryana at SJHIFM\nWe are pleased to engage you as a Data Collection Intern for a project on Skill Gap Study in\nHaryana. The engagement will be for a period of one month for the district of Gurugram,\nfrom the date of joining on the following terms and conditions:\nTERMS AND CONDITIONS:\n1. Nature of Engagement: An intern to work for a project on Skill Gap Study in Haryana.\n2. Duration: The engagement shall be for a period of one month from date of acceptance of\nthis offer.\n3. Stipend: Rs 10,000/- (Ten Thousand only)\n4. Roles & Responsibilities\n• Conducting primary field surveys across districts, covering youth, industries, and\ninstitutions as per sampling framework provided by the Head Office.\n• Interaction with a minimum of 100 student respondents per district, including students from\nITIs, polytechnic, Higher Educational Institutes, Vocational Schools etc. and other youth.\n• Completion of structured questionnaires and data collection tools.\n• Undertake a minimum of 5 industry visits and interactions with Heads to fill the\nquestionnaires.\n• Ensure accurate recording and timely submission of data using prescribed formats\n(digital/physical).\n• Assisting in maintaining data quality, field documentation, and reporting of ground-level\ninsights.\n• Submit everyday status to the concerned field coordinator at the end of the day.\n• Any other work assigned by the authority related to the project.\n4. General Terms:\na. This is purely an internship work specific for field study of skill gap in Haryana and does\nnot confer right to any form of employment.\nb. You shall be committed to the project on full time basis till the period of 1 month from the\nday of acceptance of the offer letter and follow the timelines according to the project needs.\nc. You shall maintain confidentiality of all official data and information.\nd. The Institute reserves the right to terminate the engagement at any time without prior\nnotice in case of unsatisfactory performance, misconduct or breach of this contract.\ne. Remuneration will be released only upon the satisfactory submission of report.\nPlot No. IP-9, Sector-3, Panchkula-134109\nPh. No. 0172-2585428, e-mail: dg-sjhifm@hry.gov.in, website: https://sjhifm.finhry.gov.in/\nSSSWWWAAARRRNNNAAA JJJAAAYYYAAANNNTTTIII HHHAAARRRYYYAAANNNAAA IIINNNSSSTTTIIITTTUUUTTTEEE FFFOOORRR FFFIIISSSCCCAAALLL\nMMMAAANNNAAAGGGEEEMMMEEENNNTTT HHHAAARRRYYYAAANNNAAA,,, PPPAAANNNCCCHHHKKKUUULLLAAA\nf... SSSJJJHHHFFFIIIMMM rrreeessseeerrrvvveeesss ttthhheee rrriiiggghhhttt tttooo aaammmeeennnddd aaannnyyy cccooonnndddiiitttiiiooonnn iiinnn ttthhheee iiinnnttteeerrreeesssttt ooofff ttthhheee ppprrrooojjjeeecccttt...\nSincerely,\nProf. R. S. Rathore\nPPrroojjeecctt DDiirreeccttoorr && AAddvviissoorr,, SSJJHHIIFFMM\nCopy for Information:-\n1. PPSS ttoo WW//DDGG,, SSJJHHIIFFMM\n2. CAO, SJHIFM\n3. JD, SJHIFM\nII hhaavvee uunnddeerrssttoooodd tthhee tteerrmmss aanndd cconditions of this Offer Letter. I hereby uunnddeerrsstand that this\nposition is for a ssppeecciiffiicc pprroojjeecctt oonn SSkkiillll GGaapp SSttuuddyy in Haryanawhich sshhaallll tteerrmmiinnaattee iinn one\nmonth’s time from the dddaaattteee ooofff aaacccccceeeppptttaaannnccceee ooofff ttthhhiiisss oooffffffeeerrr aaannnddd III aaagggrrreeeeee tttooo aaallllll ttthhheee ttteeerrrmmmsss aaannnddd\nconditions mentioned above.\n((SSiiggnnaattuurree aanndd nnaammee ooff tthhee ccaannddiiddaattee))\nDate:\nPPlloott NNoo.. IIPP-9, Sector-3, Panchkula-134109\nPh. No. 0172-2585428, e-mmaaiill:: dg-sjhifm@hry.gov.in, website: hhttttppss::////ssjjhhiiffmm..ffiinnhhrryy..ggoovv..iinn//",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T07:00:36.024Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 2,
+  "fields": {
+    "document": 2,
+    "version_number": 1,
+    "file": "documents/2026/09/archit_jagadeb_certificate.pdf",
+    "extracted_text": "",
+    "text_found": false,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-26T07:03:03.370Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 3,
+  "fields": {
+    "document": 3,
+    "version_number": 1,
+    "file": "documents/2026/09/034_Archit.pdf",
+    "extracted_text": "SWARNA JAYANTI HARYANA INSTITUTE FOR FISCAL\nMANAGEMENT HARYANA, PANCHKULA\nLETTER FOR INTERNSHIPIN A RESEARCH PROJECT\nMemo No.:- SJHIFM/Skill Gap Study/2026/034\nTo: Mr. Archit Jagadeb,\nSubject: Internship offer on a Project on Skill Gap Study in Haryana at SJHIFM\nWe are pleased to engage you as a Data Collection Intern for a project on Skill Gap Study in\nHaryana. The engagement will be for a period of one month for the district of Gurugram, from\nthe date of joining on the following terms and conditions:\nTERMS AND CONDITIONS:\n1. Nature of Engagement:A ni ntern to work for a project on Skill Gap Study in Haryana.\n2. Duration: Theengagementshall be for a period of one month from date of acceptance of\nthis offer.\nRs10,000/-(TenThousand only)\n3. Stipend:\n4. Roles & Responsibilities\n•Conductingprimaryfieldsurveys across districts, covering youth, industries, and\ninstitutionsaspersamplingframework provided by the Head Office.\n•Interactionwithaminimumof100 student respondents per district, including students from\nITIs,polytechnic,HigherEducational Institutes, Vocational Schools etc. and other youth.\n•Completionofstructuredquestionnaires and data collection tools.\n•Undertakeaminimumof5industry visits and interactions with Heads to fill the\nquestionnaires.\n•Ensureaccuraterecordingandtimely submission of data using prescribed formats\n(digital/physical).\n•Assistinginmaintainingdataquality, field documentation, and reporting of ground-level\ninsights.\n•Submiteverydaystatustotheconcerned field coordinator at the end of the day.\n•Anyotherworkassignedbytheauthority related to the project.\n4. General Terms:\na.Thisispurelyaninternshipwork specific for field study of skill gap in Haryana and does\nnotconferrighttoanyformofemployment.\nb.Youshallbecommittedtotheproject on full time basis till the period of 1 month from the\ndayofacceptanceoftheofferletter and follow the timelines according to the project needs.\nc.Youshallmaintainconfidentiality of all official data and information.\nd.TheInstitutereservestheright to terminate the engagement at any time without prior\nnoticeincaseofunsatisfactoryperformance, misconduct or breach of this contract.\ne.Remunerationwillbereleasedonly upon the satisfactory submission of report.\nPlot No. IP-9, Sector-3, Panchkula-134109\nPh. No. 0172-2585428, e-mail: dg-sjhifm@hry.gov.in, website: https://sjhifm.finhry.gov.in/\nSWARNA JAYANTI HARYANA INSTITUTE FOR FISCAL\nMANAGEMENT HARYANA, PANCHKULA\nf.SJHFIM reserves the right to amend any condition in the interest of the project.\nSincerely,\nProf. R. S. Rathore\nProject Director & Advisor,SJHIFM\nCopy for Information:-\n1. PS to W/DG, SJHIFM\n2. CAO, SJHIFM\n3. JD, SJHIFM\nIhave understood the terms and conditions of this Offer Letter. I hereby understand that this\nposition is for a specific project on Skill Gap Study in Haryanawhich shall terminate in one\nmonth’s time from the date of acceptance of this offer and I agree to all the terms and\nconditions mentioned above.\n(Signature and name of the candidate)\nDate: 05/06/2026\nPlot No. IP-9, Sector-3, Panchkula-134109\nPh. No. 0172-2585428, e-mail: dg-sjhifm@hry.gov.in, website: https://sjhifm.finhry.gov.in/",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T07:06:10.898Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 4,
+  "fields": {
+    "document": 4,
+    "version_number": 1,
+    "file": "documents/2026/09/adobe_certificate.pdf",
+    "extracted_text": "Certificate of Participation\nThis is to certify that Archit Jagadeb from The NorthCap\nUniversity \u0000NCU\u0000, Gurgaon has participated in the Adobe\nUniversity Hackathon organised by Adobe.",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T15:59:46.719Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 5,
+  "fields": {
+    "document": 3,
+    "version_number": 2,
+    "file": "documents/2026/09/034_Archit_IuKgNaN.pdf",
+    "extracted_text": "SWARNA JAYANTI HARYANA INSTITUTE FOR FISCAL\nMANAGEMENT HARYANA, PANCHKULA\nLETTER FOR INTERNSHIPIN A RESEARCH PROJECT\nMemo No.:- SJHIFM/Skill Gap Study/2026/034\nTo: Mr. Archit Jagadeb,\nSubject: Internship offer on a Project on Skill Gap Study in Haryana at SJHIFM\nWe are pleased to engage you as a Data Collection Intern for a project on Skill Gap Study in\nHaryana. The engagement will be for a period of one month for the district of Gurugram, from\nthe date of joining on the following terms and conditions:\nTERMS AND CONDITIONS:\n1. Nature of Engagement:A ni ntern to work for a project on Skill Gap Study in Haryana.\n2. Duration: Theengagementshall be for a period of one month from date of acceptance of\nthis offer.\nRs10,000/-(TenThousand only)\n3. Stipend:\n4. Roles & Responsibilities\n•Conductingprimaryfieldsurveys across districts, covering youth, industries, and\ninstitutionsaspersamplingframework provided by the Head Office.\n•Interactionwithaminimumof100 student respondents per district, including students from\nITIs,polytechnic,HigherEducational Institutes, Vocational Schools etc. and other youth.\n•Completionofstructuredquestionnaires and data collection tools.\n•Undertakeaminimumof5industry visits and interactions with Heads to fill the\nquestionnaires.\n•Ensureaccuraterecordingandtimely submission of data using prescribed formats\n(digital/physical).\n•Assistinginmaintainingdataquality, field documentation, and reporting of ground-level\ninsights.\n•Submiteverydaystatustotheconcerned field coordinator at the end of the day.\n•Anyotherworkassignedbytheauthority related to the project.\n4. General Terms:\na.Thisispurelyaninternshipwork specific for field study of skill gap in Haryana and does\nnotconferrighttoanyformofemployment.\nb.Youshallbecommittedtotheproject on full time basis till the period of 1 month from the\ndayofacceptanceoftheofferletter and follow the timelines according to the project needs.\nc.Youshallmaintainconfidentiality of all official data and information.\nd.TheInstitutereservestheright to terminate the engagement at any time without prior\nnoticeincaseofunsatisfactoryperformance, misconduct or breach of this contract.\ne.Remunerationwillbereleasedonly upon the satisfactory submission of report.\nPlot No. IP-9, Sector-3, Panchkula-134109\nPh. No. 0172-2585428, e-mail: dg-sjhifm@hry.gov.in, website: https://sjhifm.finhry.gov.in/\nSWARNA JAYANTI HARYANA INSTITUTE FOR FISCAL\nMANAGEMENT HARYANA, PANCHKULA\nf.SJHFIM reserves the right to amend any condition in the interest of the project.\nSincerely,\nProf. R. S. Rathore\nProject Director & Advisor,SJHIFM\nCopy for Information:-\n1. PS to W/DG, SJHIFM\n2. CAO, SJHIFM\n3. JD, SJHIFM\nIhave understood the terms and conditions of this Offer Letter. I hereby understand that this\nposition is for a specific project on Skill Gap Study in Haryanawhich shall terminate in one\nmonth’s time from the date of acceptance of this offer and I agree to all the terms and\nconditions mentioned above.\n(Signature and name of the candidate)\nDate: 05/06/2026\nPlot No. IP-9, Sector-3, Panchkula-134109\nPh. No. 0172-2585428, e-mail: dg-sjhifm@hry.gov.in, website: https://sjhifm.finhry.gov.in/",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_officer"
+    ],
+    "created_date": "2026-09-26T16:22:01.351Z",
+    "change_note": "new signature"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 6,
+  "fields": {
+    "document": 5,
+    "version_number": 1,
+    "file": "documents/2026/09/Archit_OFFER_LETTER.pdf",
+    "extracted_text": "22/05/2026\nOffer Letter\nDear Archit Jagadeb,\nWe are pleased to offer you the internship position of Web Developer at\nInAmigos Foundation. Below are the details of your internship:\nDuration of Internship: Two Weeks\nWorking Hours: The working hours for this internship are flexible, allowing you\nto adjust according to your availability. You are expected to dedicate a\nreasonable amount of time to the tasks and responsibilities assigned.\nLocation: This internship generally allows for remote work. However, if the role\nrequires fieldwork, you will be expected to attend fieldwork at a site near your\nlocation.\nResponsibilities\n● Your primary role will be related to the field of your chosen internship. All\nmajor tasks assigned to you will align with this primary focus. Additionally, you\nwill be expected to:\n● Attend team meetings and actively participate in group discussions and\nactivities.\n● Complete tasks assigned by your superiors in a timely and efficient\nmanner.\n● Ensure that the tasks given to you are completed with the utmost care\nand responsibility.\n● As a secondary responsibility, you will contribute to the organization’s\nfundraising efforts, as this is crucial for your stipend.\nStipend: The stipend for this internship will be 20% of the donation raised by\nyou during your internship period. The stipend is directly linked to the\ndonations raised and may vary accordingly. Please note that while your main\ntasks will be aligned with your primary internship role, fundraising activities\nwill be an essential part of your responsibilities to ensure the stipend.\nFundraising is not a mandatory task for achieving a completion certificate. It is\nan optional task.\nTerms and Conditions:\nBy accepting this internship, you agree to the following:\n● InAmigos Foundation may use any content you provide, including reports,\npresentations, and other work, in a professional manner.\n● Maintain professionalism and respect at all times.\n● Adhere to all foundation policies and procedures during the internship.\n● All work created during the internship will remain the property of\nInAmigos Foundation, unless otherwise agreed.\n● Maintain confidentiality regarding sensitive information.\n● Meet deadlines and complete tasks as assigned. Failure to do so may\nresult in termination.\n● Inform the foundation if you can no longer continue the internship,\nproviding the appropriate notice.\nConfidentiality: You are required to maintain the confidentiality of any\ninformation you receive during your internship. You are not permitted to disclose\nany sensitive or proprietary information related to InAmigos Foundation’s\noperations or donors.\nTermination: Either party may terminate this agreement with written notice,\nsubject to the terms agreed upon.\nKindly sign below to confirm your acceptance of this offer and send the signed\ncopy to our foundation's email at hr@inamigosfoundation.org.in\nAuthorized Signatory\nName: Ms. Iniya R\nDesignation: HR Head",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:18:47.808Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 7,
+  "fields": {
+    "document": 6,
+    "version_number": 1,
+    "file": "documents/2026/09/IIT_Ropar.pdf",
+    "extracted_text": "",
+    "text_found": false,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:26:30.708Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 8,
+  "fields": {
+    "document": 7,
+    "version_number": 1,
+    "file": "documents/2026/09/assignment_python.pdf",
+    "extracted_text": "Avchit Iogadab\nJ5CSU 344 Dt.: 2elta\nPg.:\neellnaMe nam\nsename)\nPzit \" Nane\npoint Tatal, ey caleulattotal l))\nBank Aceaul:\n- (ae),i at- num, halden, balanee)\naeyhadexsel: balane heldon, balana\n-= amt\ndal displa-balanez laol):\ndopait (1500)\nDELTA NotebooR\nD.\nPg.:\ncla Moloile\ndo--iaynana, bautc)\nsoname, sey:ba,ic=nano, baiC\nclay Managen(Biplaue):\ndynt ane, baaic, hmnu)\nSupen.init(nane, baai\nsl bon= banuwA\nDELTA Notebook\nDt.:\nPg.\nRikal)-diapla,pel\ndal ,cel.b l\naiaplay-acale):\nnameArsga area(]:24\nAisp\nDELTA Notebook",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:37:18.156Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 9,
+  "fields": {
+    "document": 7,
+    "version_number": 2,
+    "file": "documents/2026/09/assignment_python_R0TOnww.pdf",
+    "extracted_text": "Avchit Iogadab\nJ5CSU 344 Dt.: 2elta\nPg.:\neellnaMe nam\nsename)\nPzit \" Nane\npoint Tatal, ey caleulattotal l))\nBank Aceaul:\n- (ae),i at- num, halden, balanee)\naeyhadexsel: balane heldon, balana\n-= amt\ndal displa-balanez laol):\ndopait (1500)\nDELTA NotebooR\nD.\nPg.:\ncla Moloile\ndo--iaynana, bautc)\nsoname, sey:ba,ic=nano, baiC\nclay Managen(Biplaue):\ndynt ane, baaic, hmnu)\nSupen.init(nane, baai\nsl bon= banuwA\nDELTA Notebook\nDt.:\nPg.\nRikal)-diapla,pel\ndal ,cel.b l\naiaplay-acale):\nnameArsga area(]:24\nAisp\nDELTA Notebook",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T04:44:57.784Z",
+    "change_note": ""
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 10,
+  "fields": {
+    "document": 8,
+    "version_number": 1,
+    "file": "documents/2026/09/Receipt.pdf",
+    "extracted_text": "",
+    "text_found": false,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T07:51:15.842Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "documents.documentversion",
+  "pk": 11,
+  "fields": {
+    "document": 9,
+    "version_number": 1,
+    "file": "documents/2026/09/assignment_python_avGuNSB.pdf",
+    "extracted_text": "Avchit Iogadab\nJ5CSU 344 Dt.: 2elta\nPg.:\neellnaMe nam\nsename)\nPzit \" Nane\npoint Tatal, ey caleulattotal l))\nBank Aceaul:\n- (ae),i at- num, halden, balanee)\naeyhadexsel: balane heldon, balana\n-= amt\ndal displa-balanez laol):\ndopait (1500)\nDELTA NotebooR\nD.\nPg.:\ncla Moloile\ndo--iaynana, bautc)\nsoname, sey:ba,ic=nano, baiC\nclay Managen(Biplaue):\ndynt ane, baaic, hmnu)\nSupen.init(nane, baai\nsl bon= banuwA\nDELTA Notebook\nDt.:\nPg.\nRikal)-diapla,pel\ndal ,cel.b l\naiaplay-acale):\nnameArsga area(]:24\nAisp\nDELTA Notebook",
+    "text_found": true,
+    "uploaded_by": [
+      "ops_employee"
+    ],
+    "created_date": "2026-09-27T09:25:09.797Z",
+    "change_note": "Initial upload"
+  }
+},
+{
+  "model": "workflow.approvalrule",
+  "pk": 1,
+  "fields": {
+    "document_type": "invoice",
+    "department": 6,
+    "approver_role": "officer"
+  }
+},
+{
+  "model": "workflow.approvalrule",
+  "pk": 2,
+  "fields": {
+    "document_type": "safety circular",
+    "department": 7,
+    "approver_role": "admin"
+  }
+},
+{
+  "model": "workflow.approvalrule",
+  "pk": 3,
+  "fields": {
+    "document_type": "tender",
+    "department": 1,
+    "approver_role": "officer"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 1,
+  "fields": {
+    "document": 5,
+    "status": "rejected",
+    "decided_by": [
+      "ops_officer"
+    ],
+    "comment": "all letters in caps",
+    "decided_date": "2026-09-27T04:27:32.399Z",
+    "created_date": "2026-09-27T04:18:47.812Z"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 2,
+  "fields": {
+    "document": 6,
+    "status": "approved",
+    "decided_by": [
+      "ops_officer"
+    ],
+    "comment": "",
+    "decided_date": "2026-09-27T04:27:22.103Z",
+    "created_date": "2026-09-27T04:26:30.711Z"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 3,
+  "fields": {
+    "document": 7,
+    "status": "rejected",
+    "decided_by": [
+      "ops_officer"
+    ],
+    "comment": "copied",
+    "decided_date": "2026-09-27T04:37:39.290Z",
+    "created_date": "2026-09-27T04:37:18.158Z"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 4,
+  "fields": {
+    "document": 7,
+    "status": "rejected",
+    "decided_by": [
+      "admin"
+    ],
+    "comment": "no name",
+    "decided_date": "2026-09-27T04:44:21.439Z",
+    "created_date": "2026-09-27T04:38:05.501Z"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 5,
+  "fields": {
+    "document": 7,
+    "status": "approved",
+    "decided_by": [
+      "admin"
+    ],
+    "comment": "",
+    "decided_date": "2026-09-27T04:45:34.206Z",
+    "created_date": "2026-09-27T04:44:57.785Z"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 6,
+  "fields": {
+    "document": 8,
+    "status": "approved",
+    "decided_by": [
+      "ops_officer"
+    ],
+    "comment": "",
+    "decided_date": "2026-09-27T07:59:20.325Z",
+    "created_date": "2026-09-27T07:51:15.845Z"
+  }
+},
+{
+  "model": "workflow.approval",
+  "pk": 7,
+  "fields": {
+    "document": 9,
+    "status": "rejected",
+    "decided_by": [
+      "ops_officer"
+    ],
+    "comment": "dumb",
+    "decided_date": "2026-09-27T09:43:21.597Z",
+    "created_date": "2026-09-27T09:25:09.798Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "ops_officer"
+    ],
+    "action": "approve",
+    "document": 6,
+    "details": "",
+    "timestamp": "2026-09-27T04:27:22.108Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "ops_officer"
+    ],
+    "action": "reject",
+    "document": 5,
+    "details": "all letters in caps",
+    "timestamp": "2026-09-27T04:27:32.405Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "ops_officer"
+    ],
+    "action": "reject",
+    "document": 7,
+    "details": "copied",
+    "timestamp": "2026-09-27T04:37:39.296Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 4,
+  "fields": {
+    "user": [
+      "ops_employee"
+    ],
+    "action": "resubmit",
+    "document": 7,
+    "details": "",
+    "timestamp": "2026-09-27T04:38:05.503Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 5,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "reject",
+    "document": 7,
+    "details": "no name",
+    "timestamp": "2026-09-27T04:44:21.447Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 6,
+  "fields": {
+    "user": [
+      "ops_employee"
+    ],
+    "action": "resubmit",
+    "document": 7,
+    "details": "New file attached: Yes.",
+    "timestamp": "2026-09-27T04:44:57.785Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 7,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "approve",
+    "document": 7,
+    "details": "",
+    "timestamp": "2026-09-27T04:45:34.211Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 8,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 7,
+    "details": "how many question in this assignment",
+    "timestamp": "2026-09-27T07:18:01.269Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 9,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 7,
+    "details": "how many question in this assignment",
+    "timestamp": "2026-09-27T07:18:21.434Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 10,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 7,
+    "details": "how many question in this assignment",
+    "timestamp": "2026-09-27T07:19:46.788Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 11,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 7,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T07:20:00.075Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 12,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 7,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T07:20:02.891Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 13,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 6,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T07:23:35.300Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 14,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 6,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T07:23:38.395Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 15,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 4,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T07:23:47.547Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 16,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 3,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T07:23:59.786Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 17,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 3,
+    "details": "whats 2+2",
+    "timestamp": "2026-09-27T07:24:35.099Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 18,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 3,
+    "details": "hi",
+    "timestamp": "2026-09-27T07:55:26.225Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 19,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 8,
+    "details": "what is the fees of the northcap university btech",
+    "timestamp": "2026-09-27T07:56:05.404Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 20,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "action": "ai_query",
+    "document": 8,
+    "details": "what is the fees of the northcap university btech",
+    "timestamp": "2026-09-27T07:57:42.665Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 21,
+  "fields": {
+    "user": [
+      "ops_officer"
+    ],
+    "action": "approve",
+    "document": 8,
+    "details": "",
+    "timestamp": "2026-09-27T07:59:20.333Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 22,
+  "fields": {
+    "user": [
+      "ops_employee"
+    ],
+    "action": "ai_query",
+    "document": 9,
+    "details": "whats the name of this document",
+    "timestamp": "2026-09-27T09:41:46.437Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 23,
+  "fields": {
+    "user": [
+      "ops_employee"
+    ],
+    "action": "ai_query",
+    "document": 9,
+    "details": "whats 2+2",
+    "timestamp": "2026-09-27T09:41:57.443Z"
+  }
+},
+{
+  "model": "audit.auditlog",
+  "pk": 24,
+  "fields": {
+    "user": [
+      "ops_officer"
+    ],
+    "action": "reject",
+    "document": 9,
+    "details": "dumb",
+    "timestamp": "2026-09-27T09:43:21.603Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 1,
+  "fields": {
+    "recipient": [
+      "admin"
+    ],
+    "message": "New document \"Receipt\" is pending approval.",
+    "link": "/documents/8/",
+    "is_read": true,
+    "created_date": "2026-09-27T07:51:15.846Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 2,
+  "fields": {
+    "recipient": [
+      "ops_officer"
+    ],
+    "message": "New document \"Receipt\" is pending approval.",
+    "link": "/documents/8/",
+    "is_read": true,
+    "created_date": "2026-09-27T07:51:15.847Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 3,
+  "fields": {
+    "recipient": [
+      "ops_employee"
+    ],
+    "message": "Your document \"Receipt\" has been approved.",
+    "link": "/documents/8/",
+    "is_read": true,
+    "created_date": "2026-09-27T07:59:20.336Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 4,
+  "fields": {
+    "recipient": [
+      "admin"
+    ],
+    "message": "New document \"assignment python\" is pending approval.",
+    "link": "/documents/9/",
+    "is_read": true,
+    "created_date": "2026-09-27T09:25:09.799Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 5,
+  "fields": {
+    "recipient": [
+      "ops_officer"
+    ],
+    "message": "New document \"assignment python\" is pending approval.",
+    "link": "/documents/9/",
+    "is_read": true,
+    "created_date": "2026-09-27T09:25:09.799Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 6,
+  "fields": {
+    "recipient": [
+      "ops_employee"
+    ],
+    "message": "Your document \"assignment python\" was rejected: dumb",
+    "link": "/documents/9/",
+    "is_read": true,
+    "created_date": "2026-09-27T09:43:21.606Z"
+  }
+}
+]
