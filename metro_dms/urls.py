@@ -23,6 +23,7 @@ urlpatterns = [
     path('workflow/', include('workflow.urls')),
     path('notifications/', include('notifications.urls')),
     path('audit/', include('audit.urls')),
+    path('analytics/', include('analytics.urls')),
     path('', include('accounts.urls')),
 ]
 

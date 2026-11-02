@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'workflow',
     'audit',
     'notifications',
+    'analytics',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

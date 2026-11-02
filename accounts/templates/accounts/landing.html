@@ -348,8 +348,18 @@
                 </span>
             </div>
         </div>
-        {% if user.role == 'admin' or user.is_superuser %}
-            <div>
+        <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+            {% if user.role == 'officer' or user.role == 'admin' or user.is_superuser %}
+                <a href="{% url 'analytics_dashboard' %}" class="btn-analytics-link" style="display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); text-decoration: none; transition: all var(--transition-duration) ease;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    Analytics &rarr;
+                </a>
+            {% endif %}
+            {% if user.role == 'admin' or user.is_superuser %}
                 <a href="{% url 'audit_list' %}" class="btn-audit-link" style="display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); text-decoration: none; transition: all var(--transition-duration) ease;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -360,8 +370,8 @@
                     </svg>
                     Audit Log &rarr;
                 </a>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </section>
 
     <!-- Metric Cards Grid -->
